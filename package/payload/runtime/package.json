@@ -1,6 +1,6 @@
 {
   "name": "artcraft-chat-mcp",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "private": true,
   "type": "module",
   "description": "Local ArtCraft app control bridge for ChatGPT MCP connections",

@@ -14,11 +14,11 @@ import {readEffectcraftGuide} from './effectcraft-guide.mjs';
 
 export const bridge=new AppBridge();
 const photoFill=new PhotoGenerativeFill({root:bridge.root,native:(tool,args)=>bridge.call('photocraft',tool,args)});
-const app={type:'string',description:'Exact app id returned by artcraft_status, e.g. vectorcraft, figcraft, pdfcraft, cadcraft, effectcraft, photocraft.'};
+const app={type:'string',description:'Exact app id returned by artcraft_status: vectorcraft, figcraft, pdfcraft, cadcraft, effectcraft, photocraft, gridcraft.'};
 const schema=(properties,required=[])=>({type:'object',properties,required,additionalProperties:false});
 const baseTools=[
   {name:'artcraft_status',description:'List local ArtCraft apps, CLI availability, control channels, and connected live/headless modes.',inputSchema:schema({}),annotations:{readOnlyHint:true}},
-  {name:'artcraft_launch',description:'Launch a supported desktop app (VectorCraft, FigCraft, PdfCraft, EffectCraft, PhotoCraft) with its native live control channel. Never quits an existing app; if one is already running without control, ask the user to save/quit it first.',inputSchema:schema({app},['app']),annotations:{readOnlyHint:false,destructiveHint:false}},
+  {name:'artcraft_launch',description:'Launch a supported desktop app (VectorCraft, FigCraft, PdfCraft, EffectCraft, PhotoCraft, GridCraft) with its native live control channel. Never quits an existing app; if one is already running without control, ask the user to save/quit it first.',inputSchema:schema({app},['app']),annotations:{readOnlyHint:false,destructiveHint:false}},
   {name:'artcraft_connect',description:'Connect one app explicitly. Use live for an open desktop app. headless processes files without changing the visible app. Live failures NEVER fall back to headless. CADCraft currently supports headless only.',inputSchema:schema({app,mode:{type:'string',enum:['live','headless'],default:'live'}},['app']),annotations:{readOnlyHint:false,destructiveHint:false}},
   {name:'artcraft_tools',description:'Discover the actual tools and full JSON argument schemas for the connected app. Filter by query and paginate. Always discover before calling an unfamiliar app tool.',inputSchema:schema({app,query:{type:'string'},limit:{type:'integer',minimum:1,maximum:30,default:12},offset:{type:'integer',minimum:0,default:0}},['app']),annotations:{readOnlyHint:true}},
   {name:'artcraft_call',description:'Call a discovered app tool with its JSON arguments. Edits affect the connected live app, or the explicit headless session. Preserves native errors and returns PNG previews inline. Never automatically retries edits. Inspect after errors before deciding to retry.',inputSchema:schema({app,tool:{type:'string'},arguments:{type:'object'}},['app','tool']),annotations:{readOnlyHint:false,destructiveHint:true}},
@@ -45,6 +45,7 @@ export function makeServer() {
         case 'artcraft_tools':{
           if(a.app==='effectcraft'&&/^guide(?::|$)/.test(a.query||''))return reply(await readEffectcraftGuide(a.query));
           if(a.app==='photocraft'&&a.query==='guide')return reply({type:'agent_guide',app:'photocraft',markdown:await fs.readFile(path.join(DOCS_ROOT,'photocraft/AGENT_GUIDE.md'),'utf8')});
+          if(a.app==='gridcraft'&&a.query==='guide')return reply({type:'agent_guide',app:'gridcraft',markdown:await fs.readFile(path.join(DOCS_ROOT,'gridcraft/AGENT_GUIDE.md'),'utf8')});
           if(a.app==='photocraft'&&isFillQuery(a.query))return reply(fillCatalog('',Math.min(30,Math.max(1,a.limit||12)),a.offset||0));
           const data=await bridge.tools(a.app,a.query || '',Math.min(30,Math.max(1,a.limit || 12)),a.offset || 0);
           if(a.app==='photocraft')data.generativeFill={query:'generative',note:'External host image AI workflow; discover prepare/apply/status tools. Not content-aware fill.'};

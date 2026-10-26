@@ -1,13 +1,13 @@
 # ArtCraft MCP
 
-ChatGPT 채팅에서 로컬 Mac의 ArtCraft 앱을 제어하는 MCP 연결 프로그램입니다. macOS 설치 베타 **0.2.0**을 제공합니다. ArtCraft 제작사의 공식 제품이나 ChatGPT 공개 플러그인 디렉터리 등록 제품은 아닙니다.
+ChatGPT 채팅에서 로컬 Mac의 ArtCraft 앱을 제어하는 MCP 연결 프로그램입니다. macOS 설치 베타 **0.2.1**을 제공합니다. ArtCraft 제작사의 공식 제품이나 ChatGPT 공개 플러그인 디렉터리 등록 제품은 아닙니다.
 
 ## 다운로드와 설치
 
-**[macOS 설치 ZIP 다운로드](https://github.com/Shin-seong-su/artcraft-mcp/raw/refs/heads/main/downloads/artcraft-control-macos-0.2.0.zip)** · [SHA-256](downloads/artcraft-control-macos-0.2.0.zip.sha256) · [설치 안내](package/설치%20안내.txt)
+**[macOS 설치 ZIP 다운로드](https://github.com/Shin-seong-su/artcraft-mcp/raw/refs/heads/main/downloads/artcraft-control-macos-0.2.1.zip)** · [SHA-256](downloads/artcraft-control-macos-0.2.1.zip.sha256) · [설치 안내](package/설치%20안내.txt)
 
 1. ZIP을 다운로드하고 압축을 풉니다.
-2. `1 설치.command`를 실행합니다. 전용 Node.js와 공식 ArtCraft CLI 6개를 내려받아 체크섬을 확인합니다. 별도 Node.js/Python 설치나 관리자 암호는 필요하지 않습니다.
+2. `1 설치.command`를 실행합니다. 전용 Node.js와 공식 ArtCraft CLI 7개를 내려받아 체크섬을 확인합니다. 별도 Node.js/Python 설치나 관리자 암호는 필요하지 않습니다.
 3. `2 ChatGPT 연결.command`를 실행하고 **본인의 Tunnel ID와 런타임 키**를 입력합니다. 키는 macOS 키체인에 저장합니다. 제작자의 키나 터널을 공유하는 방식이 아닙니다.
 4. ChatGPT에서 사용자 지정 MCP 서버를 추가하고 연결 방식 **Tunnel**에서 본인 터널을 선택합니다. 새 대화에 플러그인을 추가해 `ArtCraft 연결 상태를 확인해줘`로 실제 호출을 확인합니다.
 
@@ -23,6 +23,7 @@ ChatGPT 채팅에서 로컬 Mac의 ArtCraft 앱을 제어하는 MCP 연결 프�
 | FigCraft | 지원 | 제어 채널 연결 필요 |
 | PDFCraft | 지원 | 제어 채널 연결 필요 |
 | CADCraft | 지원 | 이 버전에서 미지원 |
+| GridCraft | 지원 · 0.12.1 CLI | 연결 구현 · 포트 7981 · 실제 GUI 편집 별도 검증 |
 | EffectCraft | 지원 | 제어 채널 연결 필요 |
 | PhotoCraft | 지원 | 제어 채널 연결 필요 |
 
@@ -46,8 +47,10 @@ MCP 자체에 이미지 생성 모델이나 이미지 API 비용은 포함하지
 
 ## 검증과 제한
 
-자동 테스트 33개, 한글·공백 경로의 분리된 HOME 설치, 실제 CLI 6개 연결, PhotoCraft 테스트 PNG 생성·저장, 로컬 플러그인 등록, 공식 터널 클라이언트 설정 생성을 확인했습니다. 패키지의 42개 파일 해시와 플러그인/MCP JSON 스키마도 검사했습니다.
+자동 테스트 34개, 한글·공백 경로의 분리된 HOME 설치, 실제 CLI 7개 연결, PhotoCraft 테스트 PNG 생성·저장, 로컬 플러그인 등록, 공식 터널 클라이언트 설정 생성을 확인했습니다. 패키지의 43개 파일 해시와 플러그인/MCP JSON 스키마도 검사했습니다.
 
 설치 검증은 같은 Apple Silicon Mac의 분리된 HOME에서 수행했습니다. 다른 Mac/Intel Mac, 다른 사용자의 ChatGPT 인증, 실제 키체인 저장 및 로그인 자동 시작의 최종 검증은 남아 있습니다. 공개 소스에 별도의 오픈소스 라이선스를 부여하지 않았습니다. 제3자 구성 요소는 각자의 라이선스를 따릅니다.
 
 문제 보고 시 운영체제·칩 종류, 앱/CLI 버전과 오류를 알려주세요. API 키, Tunnel ID, 개인 작업 파일 및 원본 로그 전체를 공개 이슈에 올리지 마세요.
+
+GridCraft의 한글 XLSX 편집·수식·A4 인쇄 설정을 확인했습니다. 네이티브 PDF는 한글 폰트 처리에 제약이 있으므로 실제 출력물을 반드시 확인하세요. 자세한 사항은 [GridCraft 가이드](package/payload/runtime/docs/gridcraft/AGENT_GUIDE.md)에 있습니다.

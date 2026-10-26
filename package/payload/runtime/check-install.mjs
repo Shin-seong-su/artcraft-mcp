@@ -19,6 +19,15 @@ export async function checkInstall(root){
    if(state.width!==64||state.height!==48)throw Error('PhotoCraft document smoke failed');
    check.photoSmoke={passed:true,path:file,size:[state.width,state.height]};
   }
+  if(status.apps.find(a=>a.app==='gridcraft')?.cli){
+   await call('artcraft_connect',{app:'gridcraft',mode:'headless'});
+   const native=(tool,args={})=>call('artcraft_call',{app:'gridcraft',tool,arguments:args});
+   await native('write_range',{range:'A1',values:[['공급가액',26000000],['VAT','=B1*10%'],['합계','=SUM(B1:B2)']]});
+   const file=path.join(status.outputRoot,'gridcraft-install-check.xlsx');await fs.mkdir(path.dirname(file),{recursive:true});
+   await native('save_workbook',{path:file});await native('open_workbook',{path:file});const sum=await native('get_cell',{cell:'B3'});
+   if(sum.value!==28600000)throw Error('GridCraft saved formula calculation failed');
+   check.gridSmoke={passed:true,path:file,total:sum.value};
+  }
   return check;
  }finally{await client.close();}
 }

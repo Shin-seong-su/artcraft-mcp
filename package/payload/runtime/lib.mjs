@@ -14,8 +14,8 @@ export const HERE = path.dirname(fileURLToPath(import.meta.url));
 export const ROOT = runtimeConfig.root;
 export const STATE_DIR=runtimeConfig.stateDir;
 export const DOCS_ROOT=runtimeConfig.docsRoot;
-export const APPS = ['vectorcraft', 'figcraft', 'pdfcraft', 'cadcraft', 'effectcraft', 'photocraft'];
-const LABELS = {vectorcraft:'VectorCraft', figcraft:'FigCraft', pdfcraft:'PdfCraft', cadcraft:'CADCraft', effectcraft:'EffectCraft', photocraft:'PhotoCraft'};
+export const APPS = ['vectorcraft', 'figcraft', 'pdfcraft', 'cadcraft', 'effectcraft', 'photocraft', 'gridcraft'];
+const LABELS = {vectorcraft:'VectorCraft', figcraft:'FigCraft', pdfcraft:'PdfCraft', cadcraft:'CADCraft', effectcraft:'EffectCraft', photocraft:'PhotoCraft', gridcraft:'GridCraft'};
 const PORTS = runtimeConfig.ports;
 const exec = promisify(execFile);
 const validator=new Ajv({strict:false,allErrors:true,validateFormats:false});
@@ -101,6 +101,7 @@ export class AppBridge {
     const args=['mcp'];
     if(app==='vectorcraft') args.push(...(mode==='live'?['--connect',`127.0.0.1:${PORTS[app]}`]:['--headless']));
     if(app==='figcraft' && mode==='live')args.push('--attach',String(PORTS[app]));
+    if(app==='gridcraft' && mode==='live')args.push('--connect',String(PORTS[app]));
     if(app==='effectcraft')args.push(...(mode==='live'?['--bridge',String(PORTS[app])]:['--empty']));
     if(app==='photocraft')args.push('--automation-read-root',this.root,'--automation-write-root',this.root);
     if(app==='photocraft' && mode==='live'){
@@ -116,7 +117,7 @@ export class AppBridge {
       const tools=[];let cursor;
       do{const list=await client.listTools(cursor?{cursor}:{});tools.push(...list.tools);cursor=list.nextCursor;}while(cursor);
       if(mode==='live') {
-        const inspection=await client.callTool({name:app==='effectcraft'?'get_state':app==='photocraft'?'ui_inspect':'inspect_ui',arguments:{}},undefined,{timeout:15000});
+        const inspection=await client.callTool({name:app==='gridcraft'?'inspect_workbook':app==='effectcraft'?'get_state':app==='photocraft'?'ui_inspect':'inspect_ui',arguments:{}},undefined,{timeout:15000});
         if(inspection.isError)throw Error(JSON.stringify(inspection));
       }
       this.connections.set(app,{mode,client,transport,tools});

@@ -17,7 +17,7 @@ export function readRuntimeConfig(env=process.env){
  const docsRoot=absolute(env.ARTCRAFT_DOCS_ROOT||config.docsRoot,path.join(legacyRoot,'docs'));
  const appDirs=config.appDirs||['/Applications',path.join(env.HOME||os.homedir(),'Applications')];
  if(!Array.isArray(appDirs)||!appDirs.length||appDirs.some(p=>typeof p!=='string'||!path.isAbsolute(p)))throw Error('appDirs must contain absolute application directories');
- const ports={vectorcraft:7979,figcraft:7980,effectcraft:9877,photocraft:7878};
+ const ports={vectorcraft:7979,figcraft:7980,gridcraft:7981,effectcraft:9877,photocraft:7878};
  for(const [app,port] of Object.entries(config.ports||{})){
   if(!Object.hasOwn(ports,app)||!Number.isInteger(port)||port<1||port>65535)throw Error('Invalid ArtCraft control port');ports[app]=port;
  }
