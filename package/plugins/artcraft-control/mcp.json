@@ -1,0 +1,13 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/mcp.schema.json",
+  "mcpServers": {
+    "artcraft": {
+      "type": "stdio",
+      "command": "/bin/sh",
+      "args": [
+        "${PLUGIN_ROOT}/launch-mcp.sh"
+      ],
+      "cwd": "${PLUGIN_ROOT}"
+    }
+  }
+}

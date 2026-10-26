@@ -1,0 +1,1 @@
+Private distribution beta. This wrapper is not an official ArtCraft product. No personal credentials, existing tunnel configuration, artwork or GUI/CLI binaries are bundled. Official third-party runtimes/CLIs and npm dependencies are downloaded by the installer and retain their respective licenses. A public license for this wrapper has not yet been selected.

@@ -1,0 +1,175 @@
+{
+  "name": "artcraft-control",
+  "version": "0.2.0",
+  "fingerprint": "7e135f12e6a0af5a102ebfd338dfd5672f639ea1721f0801be62c9fc77d3609c",
+  "files": [
+    {
+      "path": "1 설치.command",
+      "sha256": "3449f893734f8420e3d1f047ceb8565d7b4c336767b175d44dd71895b3011ad6"
+    },
+    {
+      "path": "2 ChatGPT 연결.command",
+      "sha256": "9d872e4026097ddb00ab79872470a6192a77966a430c283a655464e858779dd6"
+    },
+    {
+      "path": "3 연결 상태.command",
+      "sha256": "3e81c2f297be63a54e126dc2fc26c5d06b19b5638fa17bfc940acf0d20dbe105"
+    },
+    {
+      "path": "4 연결 중지.command",
+      "sha256": "b554901707b0603142db4672021a1cf7ede00bf03e952acededbb2a265a76e5e"
+    },
+    {
+      "path": "NOTICE.txt",
+      "sha256": "10d741d62bb36f2b7afdd27107beb29cca117e4d30e215ed251358f1b85ea164"
+    },
+    {
+      "path": "cli-catalog.json",
+      "sha256": "f24236a9fa2c376d3b8c9181b8c3df59b3f40ef6469a21d557a55fc93f56c1d2"
+    },
+    {
+      "path": "installer/connect.sh",
+      "sha256": "aa7dc80db1cb947df31e300825bc39b2a4cac7b822cb1e31cf1ad9e7cb8d07e6"
+    },
+    {
+      "path": "installer/downloads.mjs",
+      "sha256": "7fd9814c6a14a7146322061ef47b03b4c20b2d6370e0df6b491fede56294bb6d"
+    },
+    {
+      "path": "installer/finish-install.mjs",
+      "sha256": "74d248f11bdd00a5fcad4f721ac71f9fb2478060b1c4b3fc1f0f54ff506bae7f"
+    },
+    {
+      "path": "installer/install.sh",
+      "sha256": "a48545050233fe84fa0f3c68534cfe2670904b34d1d3f5a8df0fb55ee521d3a5"
+    },
+    {
+      "path": "installer/launch-mcp.sh",
+      "sha256": "e563959777c76c340eef321b27c33ccc9722a489e20266230146560518348eeb"
+    },
+    {
+      "path": "installer/run-tunnel.mjs",
+      "sha256": "8e952bf0f78861f3866525601a0d17c1683d10b1dead151a05e39974aff19db3"
+    },
+    {
+      "path": "installer/tunnel-command.mjs",
+      "sha256": "a9b1781c68b0dc502e4552abd12da2e3114c2cc733f20ef998d026f11c059af3"
+    },
+    {
+      "path": "payload/runtime/check-install.mjs",
+      "sha256": "19e3e2058eb02302da303b33b96cb9efad02af65ce2cd512820c18c06f598dc9"
+    },
+    {
+      "path": "payload/runtime/docs/effectcraft/AGENT_GUIDE.md",
+      "sha256": "818db53fc0b5e948adb5fb1b5e6bfc9ada6fea3a1601787086106ec870b2e74c"
+    },
+    {
+      "path": "payload/runtime/docs/effectcraft/FEATURE_MAP.md",
+      "sha256": "a9026ae3c1fa05bf1256298e313217fdf7253b3f57985a53faa07460c625086c"
+    },
+    {
+      "path": "payload/runtime/docs/effectcraft/README.md",
+      "sha256": "c69df12a43d8463ae76308b548929d1d14d2a6929837505bf94c64b14f2dd947"
+    },
+    {
+      "path": "payload/runtime/docs/effectcraft/TOOLS_REFERENCE.md",
+      "sha256": "9b3bdee55cee051be9a6a639584fe4953389c96db7fba04612fd9ce0c4b2a24b"
+    },
+    {
+      "path": "payload/runtime/docs/effectcraft/VERIFICATION.md",
+      "sha256": "772d0519b870fbe1a83ea80dbfbfef3f79f4c22d433bb72d48fe10be1146ff2e"
+    },
+    {
+      "path": "payload/runtime/docs/effectcraft/reference/capabilities.json",
+      "sha256": "7dc33d4693612785a1d47477b94e91b712df9b68899b181b77f47475a00cd943"
+    },
+    {
+      "path": "payload/runtime/docs/effectcraft/reference/effects.json",
+      "sha256": "1281c736f2373b46e8843c5d13a22e509784c1a0e5ddce6cf798bce42ab417df"
+    },
+    {
+      "path": "payload/runtime/docs/effectcraft/reference/engine-commands.json",
+      "sha256": "d631905466a1b4feb3019866e792221c40eb9f38c6146b26335a4f4cfe13c858"
+    },
+    {
+      "path": "payload/runtime/docs/effectcraft/reference/mcp-headless-tools.json",
+      "sha256": "0bebc0110d8e61c7af512c8b73036c69a2bcca53fdcc2a15af2dcad286cc6dc4"
+    },
+    {
+      "path": "payload/runtime/docs/effectcraft/reference/mcp-live-tools.json",
+      "sha256": "fb92e6b5f659669b6809af61d02a8231aa1344d5451056075e32c402ba659a7e"
+    },
+    {
+      "path": "payload/runtime/docs/effectcraft/reference/metadata.json",
+      "sha256": "adaa9eb567c91b997679dd260c314c1299681df4e0b2c83e188ca79c92822a46"
+    },
+    {
+      "path": "payload/runtime/docs/photocraft/AGENT_GUIDE.md",
+      "sha256": "c1a8b620ca311e36527da63aa95cfdf277da9e89c5ddb959dc64b04ee32fdfc8"
+    },
+    {
+      "path": "payload/runtime/effectcraft-guide.mjs",
+      "sha256": "c2c0e2669f4db3717c5ff745a2886b634f803f05a8ece5b4ef9102d42063619e"
+    },
+    {
+      "path": "payload/runtime/image-download.mjs",
+      "sha256": "d869dbb7c3c44a75a67eb8f8539694acd66f0aa1529001d539e42449d4bc0ec5"
+    },
+    {
+      "path": "payload/runtime/lib.mjs",
+      "sha256": "afb84d228b2f26b4d54ed67a6002eacb6b98a22a6892c513a5836ec94d1e9d7f"
+    },
+    {
+      "path": "payload/runtime/package-lock.json",
+      "sha256": "70e88f1dfa796c8913d72693f58d1b1db9f608ab4bcbdcea0456cb8271141f56"
+    },
+    {
+      "path": "payload/runtime/package.json",
+      "sha256": "cf4b6b778a7f9a050f01e742a03f37735682c8d224b5176afbda030a80f31013"
+    },
+    {
+      "path": "payload/runtime/photocraft-generation-policy.mjs",
+      "sha256": "d316df982f17aef92fa450095b185b00351571894eacf3be99e24f3995f7365a"
+    },
+    {
+      "path": "payload/runtime/photocraft-generative-fill.mjs",
+      "sha256": "81f6be02ed50b931a214639992bc5de7d634697d48e080acd7acbd844b37dc85"
+    },
+    {
+      "path": "payload/runtime/runtime-config.mjs",
+      "sha256": "c8c5eb18b9587384ef3de2ebbc1a53cebddee8211b6b6e3150f6c5b3ac3a3c52"
+    },
+    {
+      "path": "payload/runtime/server.mjs",
+      "sha256": "da7f512605925596ebf653ac169ca0c5e0c08d8939233fb1b32133642191bb31"
+    },
+    {
+      "path": "payload/runtime/tool-aliases.mjs",
+      "sha256": "9e6807e12c03d001d1bb9c9d9f8d081d8a91e6cd46b0dc7085f2c3806e6c0aa0"
+    },
+    {
+      "path": "plugins/artcraft-control/launch-mcp.sh",
+      "sha256": "e563959777c76c340eef321b27c33ccc9722a489e20266230146560518348eeb"
+    },
+    {
+      "path": "plugins/artcraft-control/mcp.json",
+      "sha256": "7d87fb5df6e47e19cb67d170d4f2bc57fceeebb0ae14134a78edf1e107cd9c39"
+    },
+    {
+      "path": "plugins/artcraft-control/plugin.json",
+      "sha256": "1d1a3353c7cf5dd34ee570bdc3bc435a4d1c185902a727a88798281bb2916b4a"
+    },
+    {
+      "path": "plugins/artcraft-control/skills/artcraft/SKILL.md",
+      "sha256": "935101a8796403cb63c4ba4c4c40eaa80fcc7c710a3a016dcb9bec708e141797"
+    },
+    {
+      "path": "tools-catalog.json",
+      "sha256": "5479ec12d8db593cb83806147fd700052fbc4389bb1a94af575549422d5d26fc"
+    },
+    {
+      "path": "설치 안내.txt",
+      "sha256": "0d9613b21408ec188803b91af8862e20354e7317b93fb6926f682cd343da1ba7"
+    }
+  ]
+}

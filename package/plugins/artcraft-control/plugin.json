@@ -1,0 +1,22 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "artcraft-control",
+  "version": "0.2.0",
+  "description": "Control local ArtCraft apps and run original-preserving image workflows.",
+  "extensions": {
+    "com.openai": {
+      "requires_local_executor": true,
+      "interface": {
+        "displayName": "ArtCraft Control",
+        "shortDescription": "로컬 ArtCraft 앱을 채팅으로 제어",
+        "longDescription": "Local ArtCraft app control, version-aware discovery and source-preserving image generation workflows.",
+        "category": "Productivity",
+        "capabilities": [
+          "Read",
+          "Write"
+        ],
+        "defaultPrompt": "ArtCraft 앱 상태를 확인하고 작업 폴더의 파일을 편집해줘."
+      }
+    }
+  }
+}
