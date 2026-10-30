@@ -1,10 +1,10 @@
 # ArtCraft MCP
 
-ChatGPT 채팅에서 로컬 Mac의 ArtCraft 앱을 제어하는 MCP 연결 프로그램입니다. macOS 설치 베타 **0.2.1**을 제공합니다. ArtCraft 제작사의 공식 제품이나 ChatGPT 공개 플러그인 디렉터리 등록 제품은 아닙니다.
+ChatGPT 채팅에서 로컬 Mac의 ArtCraft 앱을 제어하는 MCP 연결 프로그램입니다. macOS 설치 베타 **0.2.2**를 제공합니다. ArtCraft 제작사의 공식 제품이나 ChatGPT 공개 플러그인 디렉터리 등록 제품은 아닙니다.
 
 ## 다운로드와 설치
 
-**[macOS 설치 ZIP 다운로드](https://github.com/Shin-seong-su/artcraft-mcp/raw/refs/heads/main/downloads/artcraft-control-macos-0.2.1.zip)** · [SHA-256](downloads/artcraft-control-macos-0.2.1.zip.sha256) · [설치 안내](package/설치%20안내.txt)
+**[macOS 설치 ZIP 다운로드](https://github.com/Shin-seong-su/artcraft-mcp/raw/refs/heads/main/downloads/artcraft-control-macos-0.2.2.zip)** · [SHA-256](downloads/artcraft-control-macos-0.2.2.zip.sha256) · [설치 안내](package/설치%20안내.txt)
 
 1. ZIP을 다운로드하고 압축을 풉니다.
 2. `1 설치.command`를 실행합니다. 전용 Node.js와 공식 ArtCraft CLI 7개를 내려받아 체크섬을 확인합니다. 별도 Node.js/Python 설치나 관리자 암호는 필요하지 않습니다.
@@ -23,17 +23,25 @@ ChatGPT 채팅에서 로컬 Mac의 ArtCraft 앱을 제어하는 MCP 연결 프�
 | FigCraft | 지원 | 제어 채널 연결 필요 |
 | PDFCraft | 지원 | 제어 채널 연결 필요 |
 | CADCraft | 지원 | 이 버전에서 미지원 |
-| GridCraft | 지원 · 0.12.1 CLI | 연결 구현 · 포트 7981 · 실제 GUI 편집 별도 검증 |
+| GridCraft | 지원 · 0.13.0 CLI | 연결 구현 · 포트 7981 · 실제 GUI 편집 별도 검증 |
 | EffectCraft | 지원 | 제어 채널 연결 필요 |
 | PhotoCraft | 지원 | 제어 채널 연결 필요 |
 
 Headless는 별도 파일 작업입니다. 화면에 열려 있는 문서의 편집과 구분합니다. MCP 11개 도구에서 앱별 실제 도구 스키마와 안내 문서를 조회할 수 있습니다. CLI는 검증한 버전으로 고정되어 있으므로 GUI 앱 업데이트 뒤에는 호환성을 확인해야 합니다.
+
+공식 CLI 13종의 최신 버전과 체크섬은 [별도 목록](reference/official-cli-macos.json)에 기록했습니다. 설치 패키지와 MCP 앱 제어 범위는 위의 7개 앱입니다.
 
 ## PhotoCraft 생성형 채우기
 
 원본 참조와 서버의 구조·보존 규칙을 호스트 AI의 이미지 편집 도구에 전달하고, 생성 결과를 검토한 뒤 PhotoCraft의 새 레이어에 적용합니다. 기본 구성은 **아래 원본 + 위 AI 전체 이미지**이며 원본 픽셀 보존 검사와 호스트 AI의 시각적 검토를 구분합니다.
 
 MCP 자체에 이미지 생성 모델이나 이미지 API 비용은 포함하지 않습니다. 호출하는 AI 환경에 이미지 편집 도구가 있어야 하며 결과 PNG를 로컬 파일 또는 다운로드 가능한 HTTPS URL로 전달할 수 있어야 합니다. 자동 전달이 안 되면 PNG를 작업 폴더에 저장하고 경로를 알려줄 수 있습니다. 원본과 생성 결과의 색상·구조가 완벽히 같아지는 것은 보장하지 않습니다.
+
+## PhotoCraft AI 업스케일
+
+설치 시 공식 Real-ESRGAN 엔진과 모델을 내려받아 체크섬을 확인합니다. 작업 폴더 안의 8비트 PNG를 **2배 또는 4배** 확대해 새 PNG로 저장합니다. 사진과 일러스트 모델을 선택할 수 있고, 처리는 사용자 Mac에서 이루어집니다. 원본 파일과 화면에 열린 문서는 변경하지 않습니다. 레이어 문서는 먼저 PNG로 내보내며 확대 결과의 글자·로고·형상과 투명 경계를 확인해야 합니다. 이 기능은 PhotoCraft 앱 메뉴에 추가되는 기능이 아니라 MCP를 통한 파일 처리입니다.
+
+`photocraft_tools(query="upscale")`에서 실행 및 상태 도구를 확인합니다. 한 번에 1건, 결과 최대 64MP를 지원합니다. Mac GPU 환경에 따라 사용 가능 여부와 처리 속도는 다를 수 있습니다.
 
 ## 공개한 소스
 
@@ -47,10 +55,10 @@ MCP 자체에 이미지 생성 모델이나 이미지 API 비용은 포함하지
 
 ## 검증과 제한
 
-자동 테스트 34개, 한글·공백 경로의 분리된 HOME 설치, 실제 CLI 7개 연결, PhotoCraft 테스트 PNG 생성·저장, 로컬 플러그인 등록, 공식 터널 클라이언트 설정 생성을 확인했습니다. 패키지의 43개 파일 해시와 플러그인/MCP JSON 스키마도 검사했습니다.
+자동 테스트 34개, 한글·공백 경로의 분리된 HOME 설치, 실제 CLI 7개 연결, PhotoCraft 테스트 PNG 생성·저장과 로컬 AI 업스케일 결과 열기, GridCraft 수식 파일 저장·재열기를 확인했습니다. 배포 파일 해시를 검사했습니다.
 
 설치 검증은 같은 Apple Silicon Mac의 분리된 HOME에서 수행했습니다. 다른 Mac/Intel Mac, 다른 사용자의 ChatGPT 인증, 실제 키체인 저장 및 로그인 자동 시작의 최종 검증은 남아 있습니다. 공개 소스에 별도의 오픈소스 라이선스를 부여하지 않았습니다. 제3자 구성 요소는 각자의 라이선스를 따릅니다.
 
 문제 보고 시 운영체제·칩 종류, 앱/CLI 버전과 오류를 알려주세요. API 키, Tunnel ID, 개인 작업 파일 및 원본 로그 전체를 공개 이슈에 올리지 마세요.
 
-GridCraft의 한글 XLSX 편집·수식·A4 인쇄 설정을 확인했습니다. 네이티브 PDF는 한글 폰트 처리에 제약이 있으므로 실제 출력물을 반드시 확인하세요. 자세한 사항은 [GridCraft 가이드](package/payload/runtime/docs/gridcraft/AGENT_GUIDE.md)에 있습니다.
+GridCraft 0.12.1에서 한글 XLSX 편집·수식·A4 인쇄 설정을 확인했습니다. 당시 네이티브 PDF 한글 폰트에 제약이 있었고, 0.13.0의 인쇄 동작은 별도로 확인해야 합니다. 자세한 사항은 [GridCraft 가이드](package/payload/runtime/docs/gridcraft/AGENT_GUIDE.md)에 있습니다.

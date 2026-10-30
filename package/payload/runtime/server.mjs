@@ -9,11 +9,13 @@ import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/
 import { ListToolsRequestSchema, CallToolRequestSchema } from '@modelcontextprotocol/sdk/types.js';
 import { AppBridge, APPS, HERE, STATE_DIR, DOCS_ROOT, reply, failure } from './lib.mjs';
 import {PhotoGenerativeFill,isFillTool,isFillQuery,fillCatalog} from './photocraft-generative-fill.mjs';
+import {PhotoAiUpscale,isUpscaleTool,isUpscaleQuery,upscaleCatalog} from './photocraft-ai-upscale.mjs';
 import {PHOTOCRAFT_ALIASES,photoCraftTools} from './tool-aliases.mjs';
 import {readEffectcraftGuide} from './effectcraft-guide.mjs';
 
 export const bridge=new AppBridge();
 const photoFill=new PhotoGenerativeFill({root:bridge.root,native:(tool,args)=>bridge.call('photocraft',tool,args)});
+const photoUpscale=new PhotoAiUpscale({root:bridge.root});
 const app={type:'string',description:'Exact app id returned by artcraft_status: vectorcraft, figcraft, pdfcraft, cadcraft, effectcraft, photocraft, gridcraft.'};
 const schema=(properties,required=[])=>({type:'object',properties,required,additionalProperties:false});
 const baseTools=[
@@ -47,11 +49,12 @@ export function makeServer() {
           if(a.app==='photocraft'&&a.query==='guide')return reply({type:'agent_guide',app:'photocraft',markdown:await fs.readFile(path.join(DOCS_ROOT,'photocraft/AGENT_GUIDE.md'),'utf8')});
           if(a.app==='gridcraft'&&a.query==='guide')return reply({type:'agent_guide',app:'gridcraft',markdown:await fs.readFile(path.join(DOCS_ROOT,'gridcraft/AGENT_GUIDE.md'),'utf8')});
           if(a.app==='photocraft'&&isFillQuery(a.query))return reply(fillCatalog('',Math.min(30,Math.max(1,a.limit||12)),a.offset||0));
+          if(a.app==='photocraft'&&isUpscaleQuery(a.query))return reply(upscaleCatalog('',Math.min(30,Math.max(1,a.limit||12)),a.offset||0));
           const data=await bridge.tools(a.app,a.query || '',Math.min(30,Math.max(1,a.limit || 12)),a.offset || 0);
           if(a.app==='photocraft')data.generativeFill={query:'generative',note:'External host image AI workflow; discover prepare/apply/status tools. Not content-aware fill.'};
           return reply(data);
         }
-        case 'artcraft_call':return a.app==='photocraft'&&isFillTool(a.tool)?await photoFill.call(a.tool,a.arguments||{}):await bridge.call(a.app,a.tool,a.arguments || {});
+        case 'artcraft_call':return a.app==='photocraft'&&isUpscaleTool(a.tool)?await photoUpscale.call(a.tool,a.arguments||{}):a.app==='photocraft'&&isFillTool(a.tool)?await photoFill.call(a.tool,a.arguments||{}):await bridge.call(a.app,a.tool,a.arguments || {});
         case 'artcraft_show_file':return reply(await bridge.showFile(a.app,a.path));
         default:throw Error('Unknown bridge tool');
       }

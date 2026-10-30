@@ -14,6 +14,7 @@ export function readRuntimeConfig(env=process.env){
  const root=absolute(env.ARTCRAFT_PROJECT_ROOT||config.workspace,legacyRoot);
  const cliRoot=absolute(env.ARTCRAFT_CLI_ROOT||config.cliRoot,root);
  const stateDir=absolute(env.ARTCRAFT_STATE_DIR||config.stateDir,path.join(here,'.local'));
+ const upscaleEngineDir=absolute(env.ARTCRAFT_UPSCALE_ENGINE_DIR||config.upscaleEngineDir,path.join(env.HOME||os.homedir(),'Library/Application Support/ArtCraft MCP/engines/realesrgan-20220424'));
  const docsRoot=absolute(env.ARTCRAFT_DOCS_ROOT||config.docsRoot,path.join(legacyRoot,'docs'));
  const appDirs=config.appDirs||['/Applications',path.join(env.HOME||os.homedir(),'Applications')];
  if(!Array.isArray(appDirs)||!appDirs.length||appDirs.some(p=>typeof p!=='string'||!path.isAbsolute(p)))throw Error('appDirs must contain absolute application directories');
@@ -21,6 +22,6 @@ export function readRuntimeConfig(env=process.env){
  for(const [app,port] of Object.entries(config.ports||{})){
   if(!Object.hasOwn(ports,app)||!Number.isInteger(port)||port<1||port>65535)throw Error('Invalid ArtCraft control port');ports[app]=port;
  }
- return {root,cliRoot,stateDir,docsRoot,appDirs,ports};
+ return {root,cliRoot,stateDir,docsRoot,appDirs,ports,upscaleEngineDir};
 }
 export const runtimeConfig=readRuntimeConfig();

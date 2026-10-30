@@ -4,7 +4,7 @@ import os from 'node:os';
 import {fileURLToPath,pathToFileURL} from 'node:url';
 import {execFile} from 'node:child_process';
 import {promisify} from 'node:util';
-import {download,extractExecutable,sha} from './downloads.mjs';
+import {download,extractExecutable,extractExactFile,sha} from './downloads.mjs';
 const exec=promisify(execFile),bundle=path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 export async function registerMarketplace(home,pluginRoot){
  const file=path.join(home,'.agents/plugins/marketplace.json');let catalog;
@@ -50,8 +50,20 @@ export async function install(options){
   const binary=path.join(cache,'bin',row.app+'-'+row.version,row.app+'-cli');const binarySha256=await extractExecutable(archive,row.app+'-cli',binary);
   const item={...row,binary:path.relative(cache,binary),binarySha256,verified:true};cliManifest.apps=cliManifest.apps.filter(r=>r.app!==row.app).concat(item);
  }
+ let upscaleEngineDir=previous.upscaleEngineDir;
+ if(selected.includes('photocraft')){
+  const engineUrl='https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.5.0/realesrgan-ncnn-vulkan-20220424-macos.zip';
+  const engineArchive=path.join(root,'engines/realesrgan-20220424.zip');
+  const engineSha='e0ad05580abfeb25f8d8fb55aaf7bedf552c375b5b4d9bd3c8d59764d2cc333a';
+  console.log('로컬 AI 업스케일 엔진과 모델 준비');await download(engineUrl,engineArchive,engineSha);
+  upscaleEngineDir=path.join(root,'engines/realesrgan-20220424');
+  for(const member of ['realesrgan-ncnn-vulkan','models/realesrgan-x4plus.bin','models/realesrgan-x4plus.param','models/realesrgan-x4plus-anime.bin','models/realesrgan-x4plus-anime.param'])
+   await extractExactFile(engineArchive,member,path.join(upscaleEngineDir,member),member==='realesrgan-ncnn-vulkan'?0o755:0o600);
+  await fs.copyFile(path.join(bundle,'licenses/Real-ESRGAN.txt'),path.join(upscaleEngineDir,'LICENSE-Real-ESRGAN.txt'));
+  await fs.copyFile(path.join(bundle,'licenses/ncnn.txt'),path.join(upscaleEngineDir,'LICENSE-ncnn.txt'));
+ }
  await fs.writeFile(path.join(cache,'manifest.json'),JSON.stringify(cliManifest,null,2)+'\n',{mode:0o600});
- const config={workspace,cliRoot:cache,stateDir:path.join(root,'state'),docsRoot:path.join(runtimeRoot,'docs'),runtimeRoot,version:manifest.version,bundleFingerprint:manifest.fingerprint};
+ const config={workspace,cliRoot:cache,stateDir:path.join(root,'state'),docsRoot:path.join(runtimeRoot,'docs'),runtimeRoot,version:manifest.version,bundleFingerprint:manifest.fingerprint,...(upscaleEngineDir?{upscaleEngineDir}:{})};
  await fs.mkdir(config.stateDir,{recursive:true,mode:0o700});await fs.chmod(config.stateDir,0o700);
  await fs.writeFile(path.join(root,'config.json'),JSON.stringify(config,null,2)+'\n',{mode:0o600});
  await fs.mkdir(path.join(root,'bin'),{recursive:true});

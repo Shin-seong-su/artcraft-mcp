@@ -69,7 +69,7 @@ export class AppBridge {
       const cliPackageVersion=this.manifest?.apps.find(x=>x.app===app)?.version||null;
       const desktopVersion=await this.installedVersion(app);
       apps.push({app,cli:bin,connected:!!state,mode:state?.mode || null,
-        cliPackageVersion,desktopVersion,versionMatch:cliPackageVersion&&desktopVersion?cliPackageVersion===desktopVersion:null,
+        cliPackageVersion,sessionCliVersion:state?.cliVersion||null,desktopVersion,versionMatch:cliPackageVersion&&desktopVersion?cliPackageVersion===desktopVersion:null,
         liveAvailable:PORTS[app] ? await portOpen(PORTS[app]) : app==='pdfcraft' ? await fs.access(this.controlFile()).then(()=>true,()=>false) : false,
         liveSupport:app==='cadcraft'?'No live control adapter in this version; file processing only':app==='pdfcraft'?'Native UI control channel':'Native MCP attached to desktop',
         installed:!!await this.applicationPath(app)});
@@ -110,7 +110,8 @@ export class AppBridge {
       args.push('--bridge',`127.0.0.1:${PORTS[app]}`,'--control-token-file',this.photoTokenFile());
     }
     const client=new Client({name:'artcraft-chat-bridge',version:'0.1.0'});
-    const transport=new StdioClientTransport({command:await this.binary(app),args,cwd:this.root,stderr:'pipe'});
+    const binary=await this.binary(app),cliVersion=this.manifest?.apps.find(x=>x.app===app)?.version||null;
+    const transport=new StdioClientTransport({command:binary,args,cwd:this.root,stderr:'pipe'});
     transport.stderr.on('data',()=>{}); // drain; native logs can contain document paths
     try {
       await client.connect(transport,{timeout:15000});
@@ -120,7 +121,8 @@ export class AppBridge {
         const inspection=await client.callTool({name:app==='gridcraft'?'inspect_workbook':app==='effectcraft'?'get_state':app==='photocraft'?'ui_inspect':'inspect_ui',arguments:{}},undefined,{timeout:15000});
         if(inspection.isError)throw Error(JSON.stringify(inspection));
       }
-      this.connections.set(app,{mode,client,transport,tools});
+      client.onclose=()=>{const current=this.connections.get(app);if(current?.client===client)this.connections.delete(app);};
+      this.connections.set(app,{mode,client,transport,tools,cliVersion});
       return {app,mode,connected:true,toolCount:tools.length};
     }catch(error){await client.close();throw error;}
   }
