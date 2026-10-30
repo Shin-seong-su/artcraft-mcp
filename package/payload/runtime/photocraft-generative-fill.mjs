@@ -10,6 +10,7 @@ const object=(properties,required=[])=>({type:'object',properties,required,addit
 const jobId={type:'string',pattern:'^[a-f0-9-]{36}$'};
 const visualReview=object({reference_preserved:{type:'boolean'},objects_connected:{type:'boolean'},seams_absent:{type:'boolean'},notes:{type:'string',minLength:10,maxLength:4000}},['reference_preserved','objects_connected','seams_absent','notes']);
 export const fillTools=[
+ {name:'generative_reference_chunk',description:'Read one base64 byte chunk of the prepared reference PNG so a host that supports base64 image inputs can reconstruct it without relying on an MCP image block. Verify the returned SHA-256. Do not guess bytes or print base64 in user-visible chat. Use only when the host can provide binary or data-URL image input to an editor. Preview and full source are distinct.',inputSchema:object({job_id:jobId,index:{type:'integer',minimum:0,maximum:2047},representation:{type:'string',enum:['preview','original'],default:'preview'}},['job_id','index']),annotations:{readOnlyHint:true,destructiveHint:false}},
  {name:'generative_upload_chunk',description:'Receive one independently base64-encoded chunk of an AI-generated PNG for a prepared selection job. Encode raw byte chunks separately, use 0-based indices and preserve order. Repeating the identical chunk is safe; conflicting data is rejected. Upload only if the host can access the actual generated PNG bytes; never invent or reconstruct base64.',inputSchema:object({job_id:jobId,index:{type:'integer',minimum:0,maximum:511},data:{type:'string',minLength:4,maxLength:262144,pattern:'^[A-Za-z0-9+/]*={0,2}$'}},['job_id','index','data']),annotations:{readOnlyHint:false,destructiveHint:false}},
  {name:'generative_upload_finish',description:'Assemble the uploaded PNG chunks for a prepared selection job. Supply the exact SHA-256 of the original complete PNG bytes. Validates SHA-256 and PNG before returning generated_path for the normal visually reviewed apply. Does not edit the document.',inputSchema:object({job_id:jobId,chunk_count:{type:'integer',minimum:1,maximum:512},sha256:{type:'string',pattern:'^[a-f0-9]{64}$'}},['job_id','chunk_count','sha256']),annotations:{readOnlyHint:false,destructiveHint:false}},
  {name:'generative_selection_prepare',description:'Prepare an external AI edit for the current LIVE PhotoCraft selection. Keeps the actual freeform selection for a mask on the generated layer. Inspect the reference and provide a grounded description and constraints. Do not change the document or selection before applying.',inputSchema:object({prompt:{type:'string',minLength:1,maxLength:8000},reference_description:{type:'string',minLength:10,maxLength:3000},structure_constraints:{type:'array',items:{type:'string',minLength:5,maxLength:500},minItems:1,maxItems:12}},['prompt','reference_description','structure_constraints']),annotations:{readOnlyHint:false,destructiveHint:false}},
@@ -19,7 +20,7 @@ export const fillTools=[
  {name:'generative_fill_status',description:'Read the prepared/applied/failed status, paths and verification report for a generative fill job. A failed/uncertain application is never automatically replayed.',inputSchema:object({job_id:jobId},['job_id']),annotations:{readOnlyHint:true}}
 ];
 // Present editing first; transfer tools follow preparation and application.
-fillTools.push(...fillTools.splice(0,2));
+fillTools.push(...fillTools.splice(0,3));
 export const isFillTool=name=>fillTools.some(t=>t.name===name);
 export const isFillQuery=query=>/^(generative|ai.?fill|생성형)/i.test(String(query||''));
 const ajv=new Ajv({strict:false});
@@ -95,6 +96,7 @@ export class PhotoGenerativeFill {
  dir(id){if(!/^[a-f0-9-]{36}$/.test(id))throw Error('Invalid job_id');return path.join(this.root,'output/artcraft-chat/generative-fill',id);}
  async write(job){await fs.writeFile(path.join(this.dir(job.job_id),'job.json'),JSON.stringify(job,null,2),{mode:0o600});}
  async dispatch(name,args){
+  if(name==='generative_reference_chunk')return this.referenceChunk(args);
   if(name==='generative_upload_chunk'||name==='generative_upload_finish')return this.upload(name,args);
   if(name==='generative_selection_prepare')return this.prepareSelection(args);
   if(name==='generative_selection_apply')return this.applySelection(args);
@@ -109,6 +111,18 @@ export class PhotoGenerativeFill {
    return this.apply(job,file,args.resize_to_canvas===true,args.visual_review);
   }
   return this.apply(job,args.generated_path,args.resize_to_canvas===true,args.visual_review);
+ }
+ async referenceChunk({job_id,index,representation='preview'}){
+  const job=JSON.parse(await fs.readFile(path.join(this.dir(job_id),'job.json'),'utf8'));
+  if(job.kind!=='live_selection'||job.status!=='prepared'||job.instance!==this.instance)throw Error('Selection job is not prepared in this server session');
+  const file=representation==='original'?job.sourcePath:job.previewPath;
+  const expected=representation==='original'?job.sourceSha256:job.previewSha256;
+  if(!file||!expected)throw Error('Prepared reference is unavailable; prepare a new job');
+  const bytes=await fs.readFile(file);if(hash(bytes)!==expected)throw Error('Prepared reference was modified');
+  const chunkSize=49152,count=Math.ceil(bytes.length/chunkSize);
+  if(index>=count)throw Error('Reference chunk index is out of range');
+  const chunk=bytes.subarray(index*chunkSize,Math.min(bytes.length,(index+1)*chunkSize));
+  return {content:[{type:'text',text:JSON.stringify({job_id,representation,index,chunk_count:count,chunk_bytes:chunk.length,total_bytes:bytes.length,sha256:expected,chunk_sha256:hash(chunk),mime_type:'image/png',data:chunk.toString('base64')})}]};
  }
  async upload(name,args){
   const dir=this.dir(args.job_id),job=JSON.parse(await fs.readFile(path.join(dir,'job.json'),'utf8'));
@@ -150,9 +164,9 @@ export class PhotoGenerativeFill {
   if(!plan.readyForGeneration)throw Error('Provide an observed reference description and concrete constraints');
   const generationPrompt=plan.generationPrompt+`\nThe intended edit is inside the current selection, whose bounding box is [${rect.join(',')}]. The exact selection can be irregular; use the reference image and preserve the surroundings. PhotoCraft will apply your full-size result through its actual selection mask.`;
   const job={job_id:id,kind:'live_selection',status:'prepared',instance:this.instance,created:new Date().toISOString(),rect,plan,prompt,generationPrompt,sourcePath,inputPath:sourcePath,sourceSha256:hash(bytes),signature:signature(doc,session),width:doc.width,height:doc.height,documentIndex:session.active};
-  await this.write(job);
   const scale=Math.min(1,1024/Math.max(source.width,source.height));
   const preview=scale===1?bytes:PNG.sync.write(resizeGenerated(source,Math.max(1,Math.round(source.width*scale)),Math.max(1,Math.round(source.height*scale)),true));
+  job.previewPath=path.join(dir,'reference-preview.png');job.previewSha256=hash(preview);await fs.writeFile(job.previewPath,preview,{flag:'wx',mode:0o600});await this.write(job);
   return {content:[{type:'text',text:JSON.stringify({job_id:id,status:'prepared',sourcePath,inputPath:sourcePath,selectionBounds:rect,referenceSize:[source.width,source.height],inlineReferenceSize:[Math.max(1,Math.round(source.width*scale)),Math.max(1,Math.round(source.height*scale))],generationPrompt,policy:plan,note:'The local reference is intact at full resolution; the inline image may be reduced for transport. The bounding box uses full-resolution coordinates and does not describe the exact selection shape. The MCP image block is not proof that the host image generator can consume it. Invoke image EDIT with this exact reference only if the host can explicitly include it as an input image. If it cannot, stop: do not generate from text alone, do not claim an edit, and ask the user to attach the source PNG directly or use a host with verified file handoff. Visually review the result and apply without changing the document or selection.'},null,2)},{type:'image',mimeType:'image/png',data:preview.toString('base64')}]};
  }
  async applySelection(args){

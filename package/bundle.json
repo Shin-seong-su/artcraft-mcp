@@ -1,7 +1,7 @@
 {
   "name": "artcraft-control",
-  "version": "0.2.7",
-  "fingerprint": "fca3c0f2f2bbd4a1ab32cf74e1cc846a4e8422ef2c35d4a2b237b4ff29372b91",
+  "version": "0.2.8",
+  "fingerprint": "2b3a97117a3da804745b1930bc951a32ab60cf319191df5724c3b3405614d330",
   "files": [
     {
       "path": "1 설치.command",
@@ -117,7 +117,7 @@
     },
     {
       "path": "payload/runtime/docs/photocraft/AGENT_GUIDE.md",
-      "sha256": "d391963f27432479b94f50c6a039b4b41c92097b28ca998511bc5bb8a2444261"
+      "sha256": "0469da1898263f82d7af226402ea9b80cd279474c8c0dda0ee7299ac721e3481"
     },
     {
       "path": "payload/runtime/effectcraft-guide.mjs",
@@ -149,7 +149,7 @@
     },
     {
       "path": "payload/runtime/photocraft-generative-fill.mjs",
-      "sha256": "996eac44339d710cd8c7e974e7da29d0523e7b96973dbb652587f3b086055d21"
+      "sha256": "5b1db95ae3a4b17382505e9fd4ce856416791562fb44a168843114bbc41afa12"
     },
     {
       "path": "payload/runtime/runtime-config.mjs",
@@ -173,7 +173,7 @@
     },
     {
       "path": "plugins/artcraft-control/plugin.json",
-      "sha256": "f58f0420967baa9438b6f18f94f702a03298ae76e4c34618b8f1028825c66a89"
+      "sha256": "2f49a7c6af0ff92d48c4d89b30fc7a80db8e3c1fe7ce63d8a79e751a2a339b74"
     },
     {
       "path": "plugins/artcraft-control/skills/artcraft/SKILL.md",

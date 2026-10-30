@@ -1,10 +1,10 @@
 # ArtCraft MCP
 
-ChatGPT 채팅에서 로컬 Mac의 ArtCraft 앱을 제어하는 MCP 연결 프로그램입니다. macOS 설치 베타 **0.2.7**을 제공합니다. ArtCraft 제작사의 공식 제품이나 ChatGPT 공개 플러그인 디렉터리 등록 제품은 아닙니다.
+ChatGPT 채팅에서 로컬 Mac의 ArtCraft 앱을 제어하는 MCP 연결 프로그램입니다. macOS 설치 베타 **0.2.8**을 제공합니다. ArtCraft 제작사의 공식 제품이나 ChatGPT 공개 플러그인 디렉터리 등록 제품은 아닙니다.
 
 ## 다운로드와 설치
 
-**[macOS 설치 ZIP 다운로드](https://github.com/Shin-seong-su/artcraft-mcp/raw/refs/heads/main/downloads/artcraft-control-macos-0.2.7.zip)** · [SHA-256](downloads/artcraft-control-macos-0.2.7.zip.sha256) · [설치 안내](package/설치%20안내.txt)
+**[macOS 설치 ZIP 다운로드](https://github.com/Shin-seong-su/artcraft-mcp/raw/refs/heads/main/downloads/artcraft-control-macos-0.2.8.zip)** · [SHA-256](downloads/artcraft-control-macos-0.2.8.zip.sha256) · [설치 안내](package/설치%20안내.txt)
 
 0.2.2의 AI 2배 확대는 큰 이미지에서 타일이 어긋날 수 있습니다. 0.2.3의 PhotoCraft Live 연결은 CLI 인자 오류로 실패할 수 있습니다. 최신 버전으로 업데이트해 주세요.
 
@@ -44,6 +44,8 @@ MCP 자체에 이미지 생성 모델이나 이미지 API 비용은 포함하지
 ChatGPT에서 MCP가 반환한 이미지가 이미지 생성기의 편집 입력으로 자동 전달되는지는 아직 검증하지 못했습니다. 원본을 전달할 수 없다면 텍스트만으로 생성하지 않고 원본 직접 첨부 등 다른 경로가 필요합니다. 결과 파일을 ChatGPT 파일 입력으로 돌려보내는 도구도 추가했지만 실제 ChatGPT 파일 전달은 아직 검증하지 못했습니다.
 
 0.2.7은 생성 PNG의 실제 바이트를 가진 호스트가 base64 조각으로 MCP에 전송하는 방법을 추가했습니다. 순서와 SHA-256, PNG 형식을 확인한 다음 별도 파일로 복원하며 수신 자체는 문서를 편집하지 않습니다. 실제 일반 ChatGPT 이미지 생성 도구가 생성된 이미지 바이트를 이 경로로 넘길 수 있는지는 아직 검증하지 못했습니다.
+
+0.2.8은 준비된 원본 또는 축소 참조를 base64 조각으로 읽는 방법을 추가했습니다. 원본을 보존하며 조각별 및 전체 SHA-256을 제공합니다. 일반 ChatGPT의 이미지 편집기에 이 문자열 조각을 실제 원본 입력으로 직접 전달할 수 있는지는 아직 확인되지 않았습니다.
 
 ## PhotoCraft AI 업스케일
 
