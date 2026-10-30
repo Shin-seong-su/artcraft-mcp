@@ -9,4 +9,6 @@ For GridCraft read artcraft_tools(app="gridcraft",query="guide"). For EffectCraf
 
 Default output is the full AI image above the unchanged original, never an automatically clipped strip. Source pixel preservation and host-reported visual fidelity are distinct. Match actual observed flat fills or gradients; do not invent original colors or assume a flat sky. Review failures return a revision prompt; reuse the clean original, not a rejected composite. Do not retry interrupted mutations. Use generative_fill_status and native inspection to recover.
 
+For an existing PhotoCraft LIVE selection, use generative_selection_prepare and generative_selection_apply. The actual selection becomes a layer mask; the reference supplied to the image AI identifies the bounding rectangle, not the exact mask shape. Observe and describe the selected object. Do not call this Content-Aware Fill. Never claim the live document changed until the apply result is verified.
+
 For PhotoCraft local AI enhancement or upscaling, use photocraft_tools(query="upscale"), then ai_upscale_start and ai_upscale_status via photocraft_call. JPEG conversion is automatic; preserve_size=true retains original pixel dimensions. This is a local external model, not a native PhotoCraft filter. Preserve the original and review the result.

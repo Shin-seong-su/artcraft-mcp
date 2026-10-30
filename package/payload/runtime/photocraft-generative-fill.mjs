@@ -10,6 +10,8 @@ const object=(properties,required=[])=>({type:'object',properties,required,addit
 const jobId={type:'string',pattern:'^[a-f0-9-]{36}$'};
 const visualReview=object({reference_preserved:{type:'boolean'},objects_connected:{type:'boolean'},seams_absent:{type:'boolean'},notes:{type:'string',minLength:10,maxLength:4000}},['reference_preserved','objects_connected','seams_absent','notes']);
 export const fillTools=[
+ {name:'generative_selection_prepare',description:'Prepare an external AI edit for the current LIVE PhotoCraft selection. Keeps the actual freeform selection for a mask on the generated layer. Inspect the reference and provide a grounded description and constraints. Do not change the document or selection before applying.',inputSchema:object({prompt:{type:'string',minLength:1,maxLength:8000},reference_description:{type:'string',minLength:10,maxLength:3000},structure_constraints:{type:'array',items:{type:'string',minLength:5,maxLength:500},minItems:1,maxItems:12}},['prompt','reference_description','structure_constraints']),annotations:{readOnlyHint:false,destructiveHint:false}},
+ {name:'generative_selection_apply',description:'Apply a visually reviewed external AI PNG as a new layer masked by the original LIVE selection. The original remains below. Selection and document must be unchanged since preparation. Do not replay an interrupted apply.',inputSchema:{...object({job_id:jobId,generated_path:{type:'string',minLength:1},generated_url:{type:'string',minLength:1},resize_to_canvas:{type:'boolean',default:false},visual_review:visualReview},['job_id','visual_review']),oneOf:[{required:['generated_path'],not:{required:['generated_url']}},{required:['generated_url'],not:{required:['generated_path']}}]},annotations:{readOnlyHint:false,destructiveHint:false,openWorldHint:true}},
  {name:'generative_fill_prepare',description:'Prepare an EXTERNAL image edit with server-owned preservation, structural continuity and visual-review rules. Inspect the reference first and supply reference_description and observable structure_constraints. Intact reference and full_layer output are defaults: the original stays below a complete AI result. rect=[x,y,w,h] is a focus area, not a crop boundary. Use region mode or blank_region=true only when explicitly requested. The host generates externally, reviews the full candidate, then applies.',inputSchema:object({prompt:{type:'string',minLength:1,maxLength:8000},rect:{type:'array',items:{type:'integer',minimum:0},minItems:4,maxItems:4},blank_region:{type:'boolean',default:false},output_mode:{type:'string',enum:['full_layer','region'],default:'full_layer'},scene_type:{type:'string',enum:['general','landscape'],default:'general'},reference_description:{type:'string',minLength:10,maxLength:3000},structure_constraints:{type:'array',items:{type:'string',minLength:5,maxLength:500},minItems:1,maxItems:12}},['prompt','rect','reference_description','structure_constraints']),annotations:{readOnlyHint:false,destructiveHint:false}},
  {name:'generative_fill_apply',description:'Add the reviewed external PNG as a new layer above the protected original. Default is the WHOLE AI result; no automatic strip cropping. Provide generated_path or a public HTTPS generated_url, and an honest host visual_review after inspecting the full candidate. Failed visual review rejects application and returns revision instructions. Original pixels are independently verified with the new layer hidden. Size changes require resize_to_canvas=true (same aspect ratio). Never retry interrupted writes.',inputSchema:{...object({job_id:jobId,generated_path:{type:'string',minLength:1},generated_url:{type:'string',minLength:1},resize_to_canvas:{type:'boolean',default:false},visual_review:visualReview},['job_id','visual_review']),oneOf:[{required:['generated_path'],not:{required:['generated_url']}},{required:['generated_url'],not:{required:['generated_path']}}]},annotations:{readOnlyHint:false,destructiveHint:false,openWorldHint:true}},
  {name:'generative_fill_status',description:'Read the prepared/applied/failed status, paths and verification report for a generative fill job. A failed/uncertain application is never automatically replayed.',inputSchema:object({job_id:jobId},['job_id']),annotations:{readOnlyHint:true}}
@@ -89,6 +91,8 @@ export class PhotoGenerativeFill {
  dir(id){if(!/^[a-f0-9-]{36}$/.test(id))throw Error('Invalid job_id');return path.join(this.root,'output/artcraft-chat/generative-fill',id);}
  async write(job){await fs.writeFile(path.join(this.dir(job.job_id),'job.json'),JSON.stringify(job,null,2),{mode:0o600});}
  async dispatch(name,args){
+  if(name==='generative_selection_prepare')return this.prepareSelection(args);
+  if(name==='generative_selection_apply')return this.applySelection(args);
   if(name==='generative_fill_prepare')return this.prepare(args);
   const dir=this.dir(args.job_id);const job=JSON.parse(await fs.readFile(path.join(dir,'job.json'),'utf8'));
   if(name==='generative_fill_status')return {content:[{type:'text',text:JSON.stringify(job,null,2)}]};
@@ -100,6 +104,75 @@ export class PhotoGenerativeFill {
    return this.apply(job,file,args.resize_to_canvas===true,args.visual_review);
   }
   return this.apply(job,args.generated_path,args.resize_to_canvas===true,args.visual_review);
+ }
+ async liveState(){
+  const ui=decode(await this.native('ui_inspect',{}));
+  if(!ui?.session||!ui.document||ui.session.active==null)throw Error('Open a document in the live PhotoCraft app first');
+  return {doc:ui.document,session:ui.session};
+ }
+ async liveSelect(index){return decode(await this.native('control_call',{method:'ui.menu.invoke',params:{id:`window.document.${index}`}}));}
+ async prepareSelection({prompt,reference_description,structure_constraints}){
+  const {doc,session}=await this.liveState();
+  if(!doc.hasSelection||!Array.isArray(doc.selectionBounds))throw Error('Select an area in the open PhotoCraft document first');
+  if(doc.mode!=='Rgb'||doc.depth!==8||doc.width*doc.height>16777216)throw Error('Only RGB 8-bit documents up to 16 megapixels are supported');
+  const rect=doc.selectionBounds;checkRect(rect,doc.width,doc.height);
+  const id=randomUUID(),dir=this.dir(id);await fs.mkdir(dir,{recursive:true,mode:0o700});
+  const sourcePath=path.join(dir,'source.png');decode(await this.native('doc_export',{path:sourcePath}));
+  const after=await this.liveState();
+  if(signature(doc,session)!==signature(after.doc,after.session))throw Error('Document or selection changed while preparing');
+  const bytes=await fs.readFile(sourcePath),source=readPng(bytes);
+  if(source.width!==doc.width||source.height!==doc.height)throw Error('Exported dimensions do not match the document');
+  const plan=buildGenerationPlan({prompt,rect,width:doc.width,height:doc.height,blankRegion:false,outputMode:'region',sceneType:'general',referenceDescription:reference_description,structureConstraints:structure_constraints});
+  if(!plan.readyForGeneration)throw Error('Provide an observed reference description and concrete constraints');
+  const generationPrompt=plan.generationPrompt+`\nThe intended edit is inside the current selection, whose bounding box is [${rect.join(',')}]. The exact selection can be irregular; use the reference image and preserve the surroundings. PhotoCraft will apply your full-size result through its actual selection mask.`;
+  const job={job_id:id,kind:'live_selection',status:'prepared',instance:this.instance,created:new Date().toISOString(),rect,plan,prompt,generationPrompt,sourcePath,inputPath:sourcePath,sourceSha256:hash(bytes),signature:signature(doc,session),width:doc.width,height:doc.height,documentIndex:session.active};
+  await this.write(job);
+  return {content:[{type:'text',text:JSON.stringify({job_id:id,status:'prepared',sourcePath,inputPath:sourcePath,selectionBounds:rect,generationPrompt,policy:plan,note:'The reference is intact. The bounding box does not describe the exact selection shape. Generate externally, visually review, and apply without changing the document or selection.'},null,2)},{type:'image',mimeType:'image/png',data:bytes.toString('base64')}]};
+ }
+ async applySelection(args){
+  const job=JSON.parse(await fs.readFile(path.join(this.dir(args.job_id),'job.json'),'utf8'));
+  if(job.kind!=='live_selection'||job.status!=='prepared'||job.instance!==this.instance)throw Error('Selection job is not prepared in this adapter session; do not retry an uncertain apply');
+  const rejected=['reference_preserved','objects_connected','seams_absent'].filter(k=>args.visual_review?.[k]!==true);
+  if(rejected.length)throw Error('Visual review rejected the generated result: '+rejected.join(', '));
+  let real;
+  if(args.generated_url){const bytes=await downloadImage(args.generated_url);readPng(bytes);real=path.join(this.dir(job.job_id),'generated-download.png');await fs.writeFile(real,bytes,{flag:'wx',mode:0o600});}
+  else{const root=await fs.realpath(this.root);real=await fs.realpath(path.resolve(this.root,args.generated_path));const rel=path.relative(root,real);if(rel==='..'||rel.startsWith('..'+path.sep)||path.isAbsolute(rel))throw Error('generated_path must be inside the project');}
+  const sourceBytes=await fs.readFile(job.sourcePath);if(hash(sourceBytes)!==job.sourceSha256)throw Error('Prepared source was modified');
+  const source=readPng(sourceBytes),raw=readPng(await fs.readFile(real));
+  const generated=args.resize_to_canvas?resizeGenerated(raw,source.width,source.height):raw;
+  if(generated.width!==source.width||generated.height!==source.height)throw Error('Generated PNG dimensions differ from the original');
+  for(let i=3;i<generated.data.length;i+=4)if(generated.data[i]!==255)throw Error('Generated image must be opaque');
+  const before=await this.liveState();if(signature(before.doc,before.session)!==job.signature)throw Error('Document or selection changed since preparation; prepare a new job');
+  const checkPath=path.join(this.dir(job.job_id),'before-apply.png');decode(await this.native('doc_export',{path:checkPath}));
+  const current=readPng(await fs.readFile(checkPath));if(!current.data.equals(source.data))throw Error('Document pixels changed since preparation');
+  const recheck=await this.liveState();if(signature(recheck.doc,recheck.session)!==job.signature)throw Error('Document or selection changed during validation');
+  const candidate=path.join(this.dir(job.job_id),'candidate.png');await fs.writeFile(candidate,PNG.sync.write(generated),{flag:'wx',mode:0o600});
+  job.status='applying';await this.write(job);
+  try{
+   decode(await this.native('doc_open',{path:candidate}));
+   let ui=await this.liveState();const imported=ui.session.active;
+   const target=ui.session.documents.find(d=>d.index===job.documentIndex);
+   const old=before.session.documents.find(d=>d.index===job.documentIndex);
+   if(!target||target.revision!==old.revision||imported===job.documentIndex)throw Error('Target document changed while opening the candidate');
+   const placed=await this.command('layer.copyToDocument',{source:imported,document:job.documentIndex,offset:[0,0]});
+   const layer=placed.layers?.[0];if(!Number.isInteger(layer))throw Error('PhotoCraft did not report the new layer id');
+   job.layer=layer;job.temporaryDocument=imported;await this.write(job);
+   await this.liveSelect(job.documentIndex);
+   ui=await this.liveState();if(ui.doc.revision!==old.revision+1||!ui.doc.hasSelection||JSON.stringify(ui.doc.selectionBounds)!==JSON.stringify(job.rect))throw Error('Document or selection changed before masking; inspect the document before retrying');
+   if(before.doc.layers?.[0]?.id!==layer)await this.command('layer.moveTo',{layer,target:before.doc.layers[0].id,position:'above'});
+   await this.command('layer.layerMask.revealSelection',{layer});
+   await this.command('layer.renameLayer',{layer,name:'AI Selection '+job.job_id.slice(0,8)});
+   const resultPath=path.join(this.dir(job.job_id),'result.png');decode(await this.native('doc_export',{path:resultPath}));
+   const result=readPng(await fs.readFile(resultPath));const verification=verifyComposite(source,result,job.rect);
+   await this.command('layer.setProps',{layer,visible:false});
+   let underlay;try{const f=path.join(this.dir(job.job_id),'underlay.png');decode(await this.native('doc_export',{path:f}));underlay=readPng(await fs.readFile(f));}finally{await this.command('layer.setProps',{layer,visible:true});}
+   verification.originalCompositePreserved=underlay.data.equals(source.data);verification.visualReview={...args.visual_review,provenance:'host_reported'};
+   const final=await this.liveState();verification.hasMask=!!final.doc.layers.find(l=>l.id===layer)?.hasMask;
+   job.verification=verification;job.resultPath=resultPath;
+   if(!verification.hasMask||!verification.originalCompositePreserved||!verification.outsidePreserved||!verification.insideChangedPixels)throw Error('Applied layer failed verification; inspect the document and undo manually');
+   job.status='applied';job.applied=new Date().toISOString();await this.write(job);
+   return {content:[{type:'text',text:JSON.stringify({job_id:job.job_id,status:job.status,layer,resultPath,verification,note:'A masked AI layer was added in the live document. The imported candidate remains open in a separate tab. Save a new native document to retain layers.'},null,2)},{type:'image',mimeType:'image/png',data:PNG.sync.write(result).toString('base64')}]};
+  }catch(error){job.status='failed';job.error=String(error.message);await this.write(job);throw error;}
  }
  async prepare({prompt,rect,blank_region=false,output_mode='full_layer',scene_type='general',reference_description,structure_constraints}){
   if(typeof prompt!=='string'||!prompt.trim()||prompt.length>8000)throw Error('A nonempty prompt up to 8000 characters is required');

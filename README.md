@@ -1,12 +1,12 @@
 # ArtCraft MCP
 
-ChatGPT 채팅에서 로컬 Mac의 ArtCraft 앱을 제어하는 MCP 연결 프로그램입니다. macOS 설치 베타 **0.2.4**를 제공합니다. ArtCraft 제작사의 공식 제품이나 ChatGPT 공개 플러그인 디렉터리 등록 제품은 아닙니다.
+ChatGPT 채팅에서 로컬 Mac의 ArtCraft 앱을 제어하는 MCP 연결 프로그램입니다. macOS 설치 베타 **0.2.5**를 제공합니다. ArtCraft 제작사의 공식 제품이나 ChatGPT 공개 플러그인 디렉터리 등록 제품은 아닙니다.
 
 ## 다운로드와 설치
 
-**[macOS 설치 ZIP 다운로드](https://github.com/Shin-seong-su/artcraft-mcp/raw/refs/heads/main/downloads/artcraft-control-macos-0.2.4.zip)** · [SHA-256](downloads/artcraft-control-macos-0.2.4.zip.sha256) · [설치 안내](package/설치%20안내.txt)
+**[macOS 설치 ZIP 다운로드](https://github.com/Shin-seong-su/artcraft-mcp/raw/refs/heads/main/downloads/artcraft-control-macos-0.2.5.zip)** · [SHA-256](downloads/artcraft-control-macos-0.2.5.zip.sha256) · [설치 안내](package/설치%20안내.txt)
 
-0.2.2의 AI 2배 확대는 큰 이미지에서 타일이 어긋날 수 있습니다. 0.2.3의 PhotoCraft Live 연결은 CLI 인자 오류로 실패할 수 있습니다. 0.2.4로 업데이트해 주세요.
+0.2.2의 AI 2배 확대는 큰 이미지에서 타일이 어긋날 수 있습니다. 0.2.3의 PhotoCraft Live 연결은 CLI 인자 오류로 실패할 수 있습니다. 최신 버전으로 업데이트해 주세요.
 
 1. ZIP을 다운로드하고 압축을 풉니다.
 2. `1 설치.command`를 실행합니다. 전용 Node.js와 공식 ArtCraft CLI 7개를 내려받아 체크섬을 확인합니다. 별도 Node.js/Python 설치나 관리자 암호는 필요하지 않습니다.
@@ -37,6 +37,8 @@ Headless는 별도 파일 작업입니다. 화면에 열려 있는 문서의 편
 
 원본 참조와 서버의 구조·보존 규칙을 호스트 AI의 이미지 편집 도구에 전달하고, 생성 결과를 검토한 뒤 PhotoCraft의 새 레이어에 적용합니다. 기본 구성은 **아래 원본 + 위 AI 전체 이미지**이며 원본 픽셀 보존 검사와 호스트 AI의 시각적 검토를 구분합니다.
 
+Live 문서에서 올가미 등으로 선택한 영역을 편집할 수도 있습니다. `generative_selection_prepare`로 준비하고 AI 결과를 확인한 후 `generative_selection_apply`로 선택 모양의 마스크가 적용된 새 레이어를 넣습니다. AI에는 선택의 사각 경계와 원본이 전달되며 정확한 올가미 마스크 자체는 전달되지 않으므로 대상과 위치를 구체적으로 설명해야 합니다. 선택이나 문서가 바뀌면 다시 준비합니다. 이 기능은 Content-Aware Fill이 아닙니다.
+
 MCP 자체에 이미지 생성 모델이나 이미지 API 비용은 포함하지 않습니다. 호출하는 AI 환경에 이미지 편집 도구가 있어야 하며 결과 PNG를 로컬 파일 또는 다운로드 가능한 HTTPS URL로 전달할 수 있어야 합니다. 자동 전달이 안 되면 PNG를 작업 폴더에 저장하고 경로를 알려줄 수 있습니다. 원본과 생성 결과의 색상·구조가 완벽히 같아지는 것은 보장하지 않습니다.
 
 ## PhotoCraft AI 업스케일
@@ -57,7 +59,7 @@ MCP 자체에 이미지 생성 모델이나 이미지 API 비용은 포함하지
 
 ## 검증과 제한
 
-자동 테스트 34개, 한글·공백 경로의 분리된 HOME 설치, 실제 CLI 7개 연결, PhotoCraft 테스트 PNG 생성·저장과 로컬 AI 업스케일 결과 열기, GridCraft 수식 파일 저장·재열기를 확인했습니다. 배포 파일 해시를 검사했습니다.
+자동 테스트 36개, 한글·공백 경로의 분리된 HOME 설치, 실제 CLI 7개 연결, PhotoCraft 테스트 PNG 생성·저장과 로컬 AI 업스케일 결과 열기, GridCraft 수식 파일 저장·재열기를 확인했습니다. macOS PhotoCraft 0.17.0 Live 시험 문서에서 채팅 도구로 AI 생성 결과를 올가미 마스크 레이어에 적용했습니다. 단순 시험 이미지이며 실제 사진의 제거·합성 품질은 별도 검증이 필요합니다. 배포 파일 해시를 검사했습니다.
 
 설치 검증은 같은 Apple Silicon Mac의 분리된 HOME에서 수행했습니다. 다른 Mac/Intel Mac, 다른 사용자의 ChatGPT 인증, 실제 키체인 저장 및 로그인 자동 시작의 최종 검증은 남아 있습니다. 공개 소스에 별도의 오픈소스 라이선스를 부여하지 않았습니다. 제3자 구성 요소는 각자의 라이선스를 따릅니다.
 
