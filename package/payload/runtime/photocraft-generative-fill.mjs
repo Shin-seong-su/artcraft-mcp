@@ -10,12 +10,16 @@ const object=(properties,required=[])=>({type:'object',properties,required,addit
 const jobId={type:'string',pattern:'^[a-f0-9-]{36}$'};
 const visualReview=object({reference_preserved:{type:'boolean'},objects_connected:{type:'boolean'},seams_absent:{type:'boolean'},notes:{type:'string',minLength:10,maxLength:4000}},['reference_preserved','objects_connected','seams_absent','notes']);
 export const fillTools=[
+ {name:'generative_upload_chunk',description:'Receive one independently base64-encoded chunk of an AI-generated PNG for a prepared selection job. Encode raw byte chunks separately, use 0-based indices and preserve order. Repeating the identical chunk is safe; conflicting data is rejected. Upload only if the host can access the actual generated PNG bytes; never invent or reconstruct base64.',inputSchema:object({job_id:jobId,index:{type:'integer',minimum:0,maximum:511},data:{type:'string',minLength:4,maxLength:262144,pattern:'^[A-Za-z0-9+/]*={0,2}$'}},['job_id','index','data']),annotations:{readOnlyHint:false,destructiveHint:false}},
+ {name:'generative_upload_finish',description:'Assemble the uploaded PNG chunks for a prepared selection job. Supply the exact SHA-256 of the original complete PNG bytes. Validates SHA-256 and PNG before returning generated_path for the normal visually reviewed apply. Does not edit the document.',inputSchema:object({job_id:jobId,chunk_count:{type:'integer',minimum:1,maximum:512},sha256:{type:'string',pattern:'^[a-f0-9]{64}$'}},['job_id','chunk_count','sha256']),annotations:{readOnlyHint:false,destructiveHint:false}},
  {name:'generative_selection_prepare',description:'Prepare an external AI edit for the current LIVE PhotoCraft selection. Keeps the actual freeform selection for a mask on the generated layer. Inspect the reference and provide a grounded description and constraints. Do not change the document or selection before applying.',inputSchema:object({prompt:{type:'string',minLength:1,maxLength:8000},reference_description:{type:'string',minLength:10,maxLength:3000},structure_constraints:{type:'array',items:{type:'string',minLength:5,maxLength:500},minItems:1,maxItems:12}},['prompt','reference_description','structure_constraints']),annotations:{readOnlyHint:false,destructiveHint:false}},
  {name:'generative_selection_apply',description:'Apply a visually reviewed external AI PNG as a new layer masked by the original LIVE selection. The original remains below. Selection and document must be unchanged since preparation. Do not replay an interrupted apply.',inputSchema:{...object({job_id:jobId,generated_path:{type:'string',minLength:1},generated_url:{type:'string',minLength:1},resize_to_canvas:{type:'boolean',default:false},visual_review:visualReview},['job_id','visual_review']),oneOf:[{required:['generated_path'],not:{required:['generated_url']}},{required:['generated_url'],not:{required:['generated_path']}}]},annotations:{readOnlyHint:false,destructiveHint:false,openWorldHint:true}},
  {name:'generative_fill_prepare',description:'Prepare an EXTERNAL image edit with server-owned preservation, structural continuity and visual-review rules. Inspect the reference first and supply reference_description and observable structure_constraints. Intact reference and full_layer output are defaults: the original stays below a complete AI result. rect=[x,y,w,h] is a focus area, not a crop boundary. Use region mode or blank_region=true only when explicitly requested. The host generates externally, reviews the full candidate, then applies.',inputSchema:object({prompt:{type:'string',minLength:1,maxLength:8000},rect:{type:'array',items:{type:'integer',minimum:0},minItems:4,maxItems:4},blank_region:{type:'boolean',default:false},output_mode:{type:'string',enum:['full_layer','region'],default:'full_layer'},scene_type:{type:'string',enum:['general','landscape'],default:'general'},reference_description:{type:'string',minLength:10,maxLength:3000},structure_constraints:{type:'array',items:{type:'string',minLength:5,maxLength:500},minItems:1,maxItems:12}},['prompt','rect','reference_description','structure_constraints']),annotations:{readOnlyHint:false,destructiveHint:false}},
  {name:'generative_fill_apply',description:'Add the reviewed external PNG as a new layer above the protected original. Default is the WHOLE AI result; no automatic strip cropping. Provide generated_path or a public HTTPS generated_url, and an honest host visual_review after inspecting the full candidate. Failed visual review rejects application and returns revision instructions. Original pixels are independently verified with the new layer hidden. Size changes require resize_to_canvas=true (same aspect ratio). Never retry interrupted writes.',inputSchema:{...object({job_id:jobId,generated_path:{type:'string',minLength:1},generated_url:{type:'string',minLength:1},resize_to_canvas:{type:'boolean',default:false},visual_review:visualReview},['job_id','visual_review']),oneOf:[{required:['generated_path'],not:{required:['generated_url']}},{required:['generated_url'],not:{required:['generated_path']}}]},annotations:{readOnlyHint:false,destructiveHint:false,openWorldHint:true}},
  {name:'generative_fill_status',description:'Read the prepared/applied/failed status, paths and verification report for a generative fill job. A failed/uncertain application is never automatically replayed.',inputSchema:object({job_id:jobId},['job_id']),annotations:{readOnlyHint:true}}
 ];
+// Present editing first; transfer tools follow preparation and application.
+fillTools.push(...fillTools.splice(0,2));
 export const isFillTool=name=>fillTools.some(t=>t.name===name);
 export const isFillQuery=query=>/^(generative|ai.?fill|생성형)/i.test(String(query||''));
 const ajv=new Ajv({strict:false});
@@ -91,6 +95,7 @@ export class PhotoGenerativeFill {
  dir(id){if(!/^[a-f0-9-]{36}$/.test(id))throw Error('Invalid job_id');return path.join(this.root,'output/artcraft-chat/generative-fill',id);}
  async write(job){await fs.writeFile(path.join(this.dir(job.job_id),'job.json'),JSON.stringify(job,null,2),{mode:0o600});}
  async dispatch(name,args){
+  if(name==='generative_upload_chunk'||name==='generative_upload_finish')return this.upload(name,args);
   if(name==='generative_selection_prepare')return this.prepareSelection(args);
   if(name==='generative_selection_apply')return this.applySelection(args);
   if(name==='generative_fill_prepare')return this.prepare(args);
@@ -104,6 +109,25 @@ export class PhotoGenerativeFill {
    return this.apply(job,file,args.resize_to_canvas===true,args.visual_review);
   }
   return this.apply(job,args.generated_path,args.resize_to_canvas===true,args.visual_review);
+ }
+ async upload(name,args){
+  const dir=this.dir(args.job_id),job=JSON.parse(await fs.readFile(path.join(dir,'job.json'),'utf8'));
+  if(job.kind!=='live_selection'||job.status!=='prepared'||job.instance!==this.instance)throw Error('Selection job is not prepared in this server session; prepare a new job before uploading');
+  const chunkDir=path.join(dir,'upload-chunks');await fs.mkdir(chunkDir,{recursive:true,mode:0o700});
+  if(name==='generative_upload_chunk'){
+   if(args.data.length%4!==0)throw Error('Each chunk must be independently padded base64');
+   const bytes=Buffer.from(args.data,'base64');if(!bytes.length||bytes.toString('base64')!==args.data)throw Error('Invalid or noncanonical base64 chunk');
+   const filename=path.join(chunkDir,String(args.index).padStart(3,'0'));
+   try{await fs.writeFile(filename,bytes,{flag:'wx',mode:0o600});}catch(e){if(e.code!=='EEXIST')throw e;const old=await fs.readFile(filename);if(!old.equals(bytes))throw Error('Chunk index already contains different data');}
+   return {content:[{type:'text',text:JSON.stringify({job_id:args.job_id,index:args.index,bytes:bytes.length,sha256:hash(bytes)})}]};
+  }
+  const names=await fs.readdir(chunkDir);const expected=Array.from({length:args.chunk_count},(_,i)=>String(i).padStart(3,'0'));
+  if(names.length!==expected.length||expected.some(n=>!names.includes(n)))throw Error('Chunk set is incomplete or contains unexpected indices');
+  let total=0;const chunks=[];for(const n of expected){const b=await fs.readFile(path.join(chunkDir,n));total+=b.length;if(total>100*1024*1024)throw Error('Uploaded PNG exceeds 100 MB');chunks.push(b);}
+  const bytes=Buffer.concat(chunks);if(hash(bytes)!==args.sha256)throw Error('Uploaded PNG SHA-256 mismatch');
+  const img=readPng(bytes),output=path.join(dir,'received.png');
+  try{await fs.writeFile(output,bytes,{flag:'wx',mode:0o600});}catch(e){if(e.code!=='EEXIST'||!(await fs.readFile(output)).equals(bytes))throw e;}
+  return {content:[{type:'text',text:JSON.stringify({job_id:args.job_id,status:'received',generated_path:output,sha256:args.sha256,size:[img.width,img.height],bytes:bytes.length,note:'Transfer validated. Inspect the generated image visually before using generative_selection_apply; receiving a file does not edit PhotoCraft.'})}]};
  }
  async liveState(){
   const ui=decode(await this.native('ui_inspect',{}));

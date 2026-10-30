@@ -1,10 +1,10 @@
 # ArtCraft MCP
 
-ChatGPT 채팅에서 로컬 Mac의 ArtCraft 앱을 제어하는 MCP 연결 프로그램입니다. macOS 설치 베타 **0.2.6**을 제공합니다. ArtCraft 제작사의 공식 제품이나 ChatGPT 공개 플러그인 디렉터리 등록 제품은 아닙니다.
+ChatGPT 채팅에서 로컬 Mac의 ArtCraft 앱을 제어하는 MCP 연결 프로그램입니다. macOS 설치 베타 **0.2.7**을 제공합니다. ArtCraft 제작사의 공식 제품이나 ChatGPT 공개 플러그인 디렉터리 등록 제품은 아닙니다.
 
 ## 다운로드와 설치
 
-**[macOS 설치 ZIP 다운로드](https://github.com/Shin-seong-su/artcraft-mcp/raw/refs/heads/main/downloads/artcraft-control-macos-0.2.6.zip)** · [SHA-256](downloads/artcraft-control-macos-0.2.6.zip.sha256) · [설치 안내](package/설치%20안내.txt)
+**[macOS 설치 ZIP 다운로드](https://github.com/Shin-seong-su/artcraft-mcp/raw/refs/heads/main/downloads/artcraft-control-macos-0.2.7.zip)** · [SHA-256](downloads/artcraft-control-macos-0.2.7.zip.sha256) · [설치 안내](package/설치%20안내.txt)
 
 0.2.2의 AI 2배 확대는 큰 이미지에서 타일이 어긋날 수 있습니다. 0.2.3의 PhotoCraft Live 연결은 CLI 인자 오류로 실패할 수 있습니다. 최신 버전으로 업데이트해 주세요.
 
@@ -43,6 +43,8 @@ MCP 자체에 이미지 생성 모델이나 이미지 API 비용은 포함하지
 
 ChatGPT에서 MCP가 반환한 이미지가 이미지 생성기의 편집 입력으로 자동 전달되는지는 아직 검증하지 못했습니다. 원본을 전달할 수 없다면 텍스트만으로 생성하지 않고 원본 직접 첨부 등 다른 경로가 필요합니다. 결과 파일을 ChatGPT 파일 입력으로 돌려보내는 도구도 추가했지만 실제 ChatGPT 파일 전달은 아직 검증하지 못했습니다.
 
+0.2.7은 생성 PNG의 실제 바이트를 가진 호스트가 base64 조각으로 MCP에 전송하는 방법을 추가했습니다. 순서와 SHA-256, PNG 형식을 확인한 다음 별도 파일로 복원하며 수신 자체는 문서를 편집하지 않습니다. 실제 일반 ChatGPT 이미지 생성 도구가 생성된 이미지 바이트를 이 경로로 넘길 수 있는지는 아직 검증하지 못했습니다.
+
 ## PhotoCraft AI 업스케일
 
 설치 시 공식 Real-ESRGAN 엔진과 모델을 내려받아 체크섬을 확인합니다. 작업 폴더 또는 Downloads의 JPG·8비트 PNG를 **2배, 4배 또는 원래 픽셀 크기**의 새 PNG로 저장합니다. JPG 변환과 필요한 크기 조정은 자동으로 처리합니다. 사진과 일러스트 모델을 선택할 수 있고, 처리는 사용자 Mac에서 이루어집니다. 원본 파일과 화면에 열린 문서는 변경하지 않습니다. 레이어 문서는 먼저 PNG로 내보내며 확대 결과의 글자·로고·형상과 투명 경계를 확인해야 합니다. 이 기능은 PhotoCraft 앱 메뉴에 추가되는 기능이 아니라 MCP를 통한 파일 처리입니다.
@@ -61,7 +63,7 @@ ChatGPT에서 MCP가 반환한 이미지가 이미지 생성기의 편집 입력
 
 ## 검증과 제한
 
-자동 테스트 39개, 한글·공백 경로의 분리된 HOME 설치, 실제 CLI 7개 연결, PhotoCraft 테스트 PNG 생성·저장과 로컬 AI 업스케일 결과 열기, GridCraft 수식 파일 저장·재열기를 확인했습니다. macOS PhotoCraft 0.17.0 Live 시험 문서에서 채팅 도구로 AI 생성 결과를 올가미 마스크 레이어에 적용했습니다. 단순 시험 이미지이며 실제 사진의 제거·합성 품질은 별도 검증이 필요합니다. 배포 파일 해시를 검사했습니다.
+자동 테스트 40개, 한글·공백 경로의 분리된 HOME 설치, 실제 CLI 7개 연결, PhotoCraft 테스트 PNG 생성·저장과 로컬 AI 업스케일 결과 열기, GridCraft 수식 파일 저장·재열기를 확인했습니다. macOS PhotoCraft 0.17.0 Live 시험 문서에서 채팅 도구로 AI 생성 결과를 올가미 마스크 레이어에 적용했습니다. 실제 터널에서 별도 시험 PNG의 base64 수신 및 SHA-256 복원을 확인했습니다. 단순 시험 이미지이며 실제 사진의 제거·합성 품질은 별도 검증이 필요합니다. 배포 파일 해시를 검사했습니다.
 
 설치 검증은 같은 Apple Silicon Mac의 분리된 HOME에서 수행했습니다. 다른 Mac/Intel Mac, 다른 사용자의 ChatGPT 인증, 실제 키체인 저장 및 로그인 자동 시작의 최종 검증은 남아 있습니다. 공개 소스에 별도의 오픈소스 라이선스를 부여하지 않았습니다. 제3자 구성 요소는 각자의 라이선스를 따릅니다.
 
