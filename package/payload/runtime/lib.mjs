@@ -34,6 +34,11 @@ export async function portOpen(port) {
 export function validateApp(app) {
   if (!APPS.includes(app)) throw Error(`Unknown app: ${app}`);
 }
+export function photoMcpArgs(mode,root,port,tokenFile) {
+  if(mode==='headless')return ['--automation-read-root',root,'--automation-write-root',root];
+  if(mode==='live')return ['--bridge',`127.0.0.1:${port}`,'--control-token-file',tokenFile];
+  throw Error('Invalid PhotoCraft connection mode');
+}
 export async function runFile(bin,args,options={}) {
   // No shell, no user-supplied executable. Do not retry mutations on failure.
   try {return (await exec(bin,args,{cwd:ROOT,timeout:60000,maxBuffer:12*1024*1024,...options})).stdout;}
@@ -103,11 +108,13 @@ export class AppBridge {
     if(app==='figcraft' && mode==='live')args.push('--attach',String(PORTS[app]));
     if(app==='gridcraft' && mode==='live')args.push('--connect',String(PORTS[app]));
     if(app==='effectcraft')args.push(...(mode==='live'?['--bridge',String(PORTS[app])]:['--empty']));
-    if(app==='photocraft')args.push('--automation-read-root',this.root,'--automation-write-root',this.root);
+    // In bridge mode the running desktop process owns its automation roots;
+    // recent PhotoCraft CLIs reject root flags on the bridge client itself.
+    if(app==='photocraft' && mode==='headless')args.push(...photoMcpArgs(mode,this.root,PORTS[app],this.photoTokenFile()));
     if(app==='photocraft' && mode==='live'){
       const stat=await fs.lstat(this.photoTokenFile());
       if(stat.isSymbolicLink()||!stat.isFile()||stat.uid!==process.getuid()||(stat.mode&0o077))throw Error('Unsafe PhotoCraft token file permissions. Use a private, user-owned control token file.');
-      args.push('--bridge',`127.0.0.1:${PORTS[app]}`,'--control-token-file',this.photoTokenFile());
+      args.push(...photoMcpArgs(mode,this.root,PORTS[app],this.photoTokenFile()));
     }
     const client=new Client({name:'artcraft-chat-bridge',version:'0.1.0'});
     const binary=await this.binary(app),cliVersion=this.manifest?.apps.find(x=>x.app===app)?.version||null;

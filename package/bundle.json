@@ -1,7 +1,7 @@
 {
   "name": "artcraft-control",
-  "version": "0.2.3",
-  "fingerprint": "45d3165845e21aaa4a83515f9f427f3aaca82d79d7cb6254fe97c8cde254e45d",
+  "version": "0.2.4",
+  "fingerprint": "217883d2422df8bd64a349cde9a292f8c1f72e3ffc0b8e9ea456986aa6e034ac",
   "files": [
     {
       "path": "1 설치.command",
@@ -129,7 +129,7 @@
     },
     {
       "path": "payload/runtime/lib.mjs",
-      "sha256": "086aafb2f02f7277f4639e5e5d44783703211fac6bc6a5213b4087a08f6a08a3"
+      "sha256": "8ebf481866be2d0caa0dfc014e185894337040cb6bec3aa44d7d5b5798672f87"
     },
     {
       "path": "payload/runtime/package-lock.json",
@@ -173,7 +173,7 @@
     },
     {
       "path": "plugins/artcraft-control/plugin.json",
-      "sha256": "b3227464a74eef83dbe146a1177590a32aec6104d848da4bca99b3da101cacdc"
+      "sha256": "6ef76c1c6784e0451a6cad406cc0a44ce03932abafa1b8bc781a89a930e71b3f"
     },
     {
       "path": "plugins/artcraft-control/skills/artcraft/SKILL.md",

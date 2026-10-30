@@ -1,8 +1,9 @@
-ArtCraft MCP macOS beta 0.2.3 — 2026-10-30
+ArtCraft MCP macOS beta 0.2.4 — 2026-10-30
 
-ZIP SHA-256: 0cb3038b26d0aafe674952c989926413b9010ca355101e745884ccf74074b98c
+ZIP SHA-256: d46a42cfe1e006d863ba09705d991ecbc4c8f02536b437500c7fb2b2709859e2
 
-- 자동 테스트 34개 통과. 공식 CLI 13종 다운로드와 SHA-256 확인, 각 --version 실행 확인.
+- 자동 테스트 35개 통과. 공식 CLI 13종 다운로드와 SHA-256 확인, 각 --version 실행 확인.
+- PhotoCraft 0.17.0 Live 연결에서 headless 전용 root 인자를 제거하여 실제 켜진 앱의 UI 상태 읽기 확인. 기존 문서 편집은 확인하지 않음.
 - 배포 범위 7개 앱 최신 CLI를 새 Headless 세션으로 연결해 도구 목록 확인.
 - 한글·공백 경로, Node가 없는 PATH의 분리된 HOME에 최종 ZIP 설치 성공.
 - PhotoCraft 0.17.0의 PNG 저장 및 실제 로컬 Real-ESRGAN 2배 확대 후 파일 열기 통과.

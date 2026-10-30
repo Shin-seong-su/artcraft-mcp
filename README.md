@@ -1,12 +1,12 @@
 # ArtCraft MCP
 
-ChatGPT 채팅에서 로컬 Mac의 ArtCraft 앱을 제어하는 MCP 연결 프로그램입니다. macOS 설치 베타 **0.2.3**을 제공합니다. ArtCraft 제작사의 공식 제품이나 ChatGPT 공개 플러그인 디렉터리 등록 제품은 아닙니다.
+ChatGPT 채팅에서 로컬 Mac의 ArtCraft 앱을 제어하는 MCP 연결 프로그램입니다. macOS 설치 베타 **0.2.4**를 제공합니다. ArtCraft 제작사의 공식 제품이나 ChatGPT 공개 플러그인 디렉터리 등록 제품은 아닙니다.
 
 ## 다운로드와 설치
 
-**[macOS 설치 ZIP 다운로드](https://github.com/Shin-seong-su/artcraft-mcp/raw/refs/heads/main/downloads/artcraft-control-macos-0.2.3.zip)** · [SHA-256](downloads/artcraft-control-macos-0.2.3.zip.sha256) · [설치 안내](package/설치%20안내.txt)
+**[macOS 설치 ZIP 다운로드](https://github.com/Shin-seong-su/artcraft-mcp/raw/refs/heads/main/downloads/artcraft-control-macos-0.2.4.zip)** · [SHA-256](downloads/artcraft-control-macos-0.2.4.zip.sha256) · [설치 안내](package/설치%20안내.txt)
 
-0.2.2의 AI 2배 확대는 큰 이미지에서 타일이 어긋날 수 있습니다. 0.2.3으로 업데이트해 주세요.
+0.2.2의 AI 2배 확대는 큰 이미지에서 타일이 어긋날 수 있습니다. 0.2.3의 PhotoCraft Live 연결은 CLI 인자 오류로 실패할 수 있습니다. 0.2.4로 업데이트해 주세요.
 
 1. ZIP을 다운로드하고 압축을 풉니다.
 2. `1 설치.command`를 실행합니다. 전용 Node.js와 공식 ArtCraft CLI 7개를 내려받아 체크섬을 확인합니다. 별도 Node.js/Python 설치나 관리자 암호는 필요하지 않습니다.
