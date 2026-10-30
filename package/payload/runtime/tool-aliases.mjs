@@ -5,6 +5,7 @@ export function photoCraftTools(tools){
   const inputSchema=structuredClone(original.inputSchema);delete inputSchema.properties.app;
   inputSchema.required=(inputSchema.required||[]).filter(k=>k!=='app');
   if(name==='photocraft_connect')inputSchema.properties.mode.default='headless';
-  return {...original,name,description:`PhotoCraft only. No app argument. ${name==='photocraft_connect'?'Connect mode=headless for file editing, or live for a desktop app with its control channel. Default headless.':original.description}`,inputSchema};
+  const hint=name==='photocraft_tools'?' AI image enhancement and upscaling: query="upscale" discovers ai_upscale_start and ai_upscale_status; JPEG conversion is automatic, and preserve_size can retain original dimensions.':name==='photocraft_call'?' Use ai_upscale_start for local AI image enhancement; discover its schema with photocraft_tools(query="upscale").':'';
+  return {...original,name,description:`PhotoCraft only. No app argument. ${name==='photocraft_connect'?'Connect mode=headless for file editing, or live for a desktop app with its control channel. Default headless.':original.description}${hint}`,inputSchema};
  });
 }

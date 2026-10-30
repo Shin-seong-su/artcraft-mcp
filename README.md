@@ -1,10 +1,12 @@
 # ArtCraft MCP
 
-ChatGPT 채팅에서 로컬 Mac의 ArtCraft 앱을 제어하는 MCP 연결 프로그램입니다. macOS 설치 베타 **0.2.2**를 제공합니다. ArtCraft 제작사의 공식 제품이나 ChatGPT 공개 플러그인 디렉터리 등록 제품은 아닙니다.
+ChatGPT 채팅에서 로컬 Mac의 ArtCraft 앱을 제어하는 MCP 연결 프로그램입니다. macOS 설치 베타 **0.2.3**을 제공합니다. ArtCraft 제작사의 공식 제품이나 ChatGPT 공개 플러그인 디렉터리 등록 제품은 아닙니다.
 
 ## 다운로드와 설치
 
-**[macOS 설치 ZIP 다운로드](https://github.com/Shin-seong-su/artcraft-mcp/raw/refs/heads/main/downloads/artcraft-control-macos-0.2.2.zip)** · [SHA-256](downloads/artcraft-control-macos-0.2.2.zip.sha256) · [설치 안내](package/설치%20안내.txt)
+**[macOS 설치 ZIP 다운로드](https://github.com/Shin-seong-su/artcraft-mcp/raw/refs/heads/main/downloads/artcraft-control-macos-0.2.3.zip)** · [SHA-256](downloads/artcraft-control-macos-0.2.3.zip.sha256) · [설치 안내](package/설치%20안내.txt)
+
+0.2.2의 AI 2배 확대는 큰 이미지에서 타일이 어긋날 수 있습니다. 0.2.3으로 업데이트해 주세요.
 
 1. ZIP을 다운로드하고 압축을 풉니다.
 2. `1 설치.command`를 실행합니다. 전용 Node.js와 공식 ArtCraft CLI 7개를 내려받아 체크섬을 확인합니다. 별도 Node.js/Python 설치나 관리자 암호는 필요하지 않습니다.
@@ -39,9 +41,9 @@ MCP 자체에 이미지 생성 모델이나 이미지 API 비용은 포함하지
 
 ## PhotoCraft AI 업스케일
 
-설치 시 공식 Real-ESRGAN 엔진과 모델을 내려받아 체크섬을 확인합니다. 작업 폴더 안의 8비트 PNG를 **2배 또는 4배** 확대해 새 PNG로 저장합니다. 사진과 일러스트 모델을 선택할 수 있고, 처리는 사용자 Mac에서 이루어집니다. 원본 파일과 화면에 열린 문서는 변경하지 않습니다. 레이어 문서는 먼저 PNG로 내보내며 확대 결과의 글자·로고·형상과 투명 경계를 확인해야 합니다. 이 기능은 PhotoCraft 앱 메뉴에 추가되는 기능이 아니라 MCP를 통한 파일 처리입니다.
+설치 시 공식 Real-ESRGAN 엔진과 모델을 내려받아 체크섬을 확인합니다. 작업 폴더 또는 Downloads의 JPG·8비트 PNG를 **2배, 4배 또는 원래 픽셀 크기**의 새 PNG로 저장합니다. JPG 변환과 필요한 크기 조정은 자동으로 처리합니다. 사진과 일러스트 모델을 선택할 수 있고, 처리는 사용자 Mac에서 이루어집니다. 원본 파일과 화면에 열린 문서는 변경하지 않습니다. 레이어 문서는 먼저 PNG로 내보내며 확대 결과의 글자·로고·형상과 투명 경계를 확인해야 합니다. 이 기능은 PhotoCraft 앱 메뉴에 추가되는 기능이 아니라 MCP를 통한 파일 처리입니다.
 
-`photocraft_tools(query="upscale")`에서 실행 및 상태 도구를 확인합니다. 한 번에 1건, 결과 최대 64MP를 지원합니다. Mac GPU 환경에 따라 사용 가능 여부와 처리 속도는 다를 수 있습니다.
+`photocraft_tools(query="upscale")`에서 실행 및 상태 도구를 확인합니다. 모델은 항상 4배로 처리한 후 요청한 크기로 조정하므로 입력은 최대 4MP(중간 결과 최대 64MP)입니다. Mac GPU 환경에 따라 사용 가능 여부와 처리 속도는 다를 수 있습니다.
 
 ## 공개한 소스
 

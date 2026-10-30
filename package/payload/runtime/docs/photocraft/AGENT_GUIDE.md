@@ -8,12 +8,14 @@ Real-ESRGAN 엔진을 호출하여 **별도의 평탄화된 PNG**를 만든다. 
 PNG로 내보내고, 원본 편집 파일은 유지한다.
 
 1. `photocraft_tools({"query":"upscale"})`로 현재 스키마를 확인한다.
-2. `photocraft_call({"tool":"ai_upscale_start","arguments":{"input_path":"워크스페이스 안의 8비트 PNG","scale":2,"model":"photo"}})`를 실행한다.
-   배율은 2 또는 4, 모델은 `photo` 또는 `illustration`. 경로는 워크스페이스 내부여야 하며 결과는 최대 64MP.
+2. `photocraft_call({"tool":"ai_upscale_start","arguments":{"input_path":"워크스페이스 또는 Downloads의 PNG/JPG","scale":2,"model":"photo","preserve_size":true}})`를 실행한다.
+   JPG는 자동으로 PNG로 변환한다. 원래 픽셀 크기를 유지할 때 `preserve_size:true`로 AI 확대 후 자동 축소한다.
+   배율은 2 또는 4, 모델은 `photo` 또는 `illustration`. 모델은 항상 4배로 처리하고 2배는 후처리로 만든다.
+   AI 중간 이미지는 최대 64MP이며 입력은 최대 4MP다.
 3. 반환된 `job_id`를 `ai_upscale_status`에 전달해 `completed`와 실제 출력 경로를 확인한다.
    실행 중인 작업은 한 번만 요청하고 끝날 때까지 상태를 확인한다. 중단·오류를 자동 재시도하지 않는다.
 4. 결과를 실제 원본과 비교한다. 글자·로고·제품 형상과 투명 경계가 달라질 수 있다.
-   `doc_open`으로 결과를 새 Headless 문서로 열거나 `photocraft_show_file`로 표시할 수 있다.
+   `doc_open`으로 결과를 새 Headless 문서로 열거나 `photocraft_show_file`로 표시할 수 있다. 결과 PNG의 메타데이터·색 프로필은 원본과 다를 수 있다.
    화면에 열린 원본 문서에 반영했다고 주장하지 않는다.
 
 엔진은 `~/Library/Application Support/ArtCraft MCP/engines/realesrgan-20220424/`에
