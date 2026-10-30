@@ -51,9 +51,9 @@ export function makePatch(source,generated,rect){
  }
  return patch;
 }
-export function resizeGenerated(image,width,height){
+export function resizeGenerated(image,width,height,allowPreviewRounding=false){
  if(image.width===width&&image.height===height)return image;
- if(image.width*height!==image.height*width)throw Error('Generated image aspect ratio differs; resampling would distort the result');
+ if(!allowPreviewRounding&&image.width*height!==image.height*width)throw Error('Generated image aspect ratio differs; resampling would distort the result');
  const result=new PNG({width,height});
  for(let y=0;y<height;y++)for(let x=0;x<width;x++){
   const sx=Math.max(0,Math.min(image.width-1,(x+0.5)*image.width/width-0.5));
@@ -127,7 +127,9 @@ export class PhotoGenerativeFill {
   const generationPrompt=plan.generationPrompt+`\nThe intended edit is inside the current selection, whose bounding box is [${rect.join(',')}]. The exact selection can be irregular; use the reference image and preserve the surroundings. PhotoCraft will apply your full-size result through its actual selection mask.`;
   const job={job_id:id,kind:'live_selection',status:'prepared',instance:this.instance,created:new Date().toISOString(),rect,plan,prompt,generationPrompt,sourcePath,inputPath:sourcePath,sourceSha256:hash(bytes),signature:signature(doc,session),width:doc.width,height:doc.height,documentIndex:session.active};
   await this.write(job);
-  return {content:[{type:'text',text:JSON.stringify({job_id:id,status:'prepared',sourcePath,inputPath:sourcePath,selectionBounds:rect,generationPrompt,policy:plan,note:'The reference is intact. The bounding box does not describe the exact selection shape. Generate externally, visually review, and apply without changing the document or selection.'},null,2)},{type:'image',mimeType:'image/png',data:bytes.toString('base64')}]};
+  const scale=Math.min(1,1024/Math.max(source.width,source.height));
+  const preview=scale===1?bytes:PNG.sync.write(resizeGenerated(source,Math.max(1,Math.round(source.width*scale)),Math.max(1,Math.round(source.height*scale)),true));
+  return {content:[{type:'text',text:JSON.stringify({job_id:id,status:'prepared',sourcePath,inputPath:sourcePath,selectionBounds:rect,referenceSize:[source.width,source.height],inlineReferenceSize:[Math.max(1,Math.round(source.width*scale)),Math.max(1,Math.round(source.height*scale))],generationPrompt,policy:plan,note:'The local reference is intact at full resolution; the inline image may be reduced for transport. The bounding box uses full-resolution coordinates and does not describe the exact selection shape. The MCP image block is not proof that the host image generator can consume it. Invoke image EDIT with this exact reference only if the host can explicitly include it as an input image. If it cannot, stop: do not generate from text alone, do not claim an edit, and ask the user to attach the source PNG directly or use a host with verified file handoff. Visually review the result and apply without changing the document or selection.'},null,2)},{type:'image',mimeType:'image/png',data:preview.toString('base64')}]};
  }
  async applySelection(args){
   const job=JSON.parse(await fs.readFile(path.join(this.dir(args.job_id),'job.json'),'utf8'));

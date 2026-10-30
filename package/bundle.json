@@ -1,7 +1,7 @@
 {
   "name": "artcraft-control",
-  "version": "0.2.5",
-  "fingerprint": "64dce03f03c8d6ec26bca12640419eadc3920c4984ada58bd8d08ba50cfa0c27",
+  "version": "0.2.6",
+  "fingerprint": "78dd5fdfd0a7e14ab7298b1d3a33497a00613eb7994fed84a7300e3cda3e1ef8",
   "files": [
     {
       "path": "1 설치.command",
@@ -65,7 +65,7 @@
     },
     {
       "path": "payload/runtime/check-install.mjs",
-      "sha256": "5316ef96cc8562bf331a836466f4ea07889533edcb035f07cb5c6951b4a698a4"
+      "sha256": "fd6b44a310870a6a39ce989f6b0136e23d360296589316389fb24c4922943dff"
     },
     {
       "path": "payload/runtime/docs/effectcraft/AGENT_GUIDE.md",
@@ -117,7 +117,7 @@
     },
     {
       "path": "payload/runtime/docs/photocraft/AGENT_GUIDE.md",
-      "sha256": "4e5e5cc7e38e5cbb2cd0c1f0b067b1051813e846542b3274ad01259bc2bb6de1"
+      "sha256": "3de1e6d0b855630975131495efc2036ea524cdbe57362312afbc761b49c94b14"
     },
     {
       "path": "payload/runtime/effectcraft-guide.mjs",
@@ -149,7 +149,7 @@
     },
     {
       "path": "payload/runtime/photocraft-generative-fill.mjs",
-      "sha256": "76378e1ae9d0b269f58c7104549f20fa3ddf626bba1123b099f9ba88d17f4016"
+      "sha256": "a15d8576d10bec353852fa7e6f65a5f47465310a05f02d54627a9f6ef1ff266c"
     },
     {
       "path": "payload/runtime/runtime-config.mjs",
@@ -157,11 +157,11 @@
     },
     {
       "path": "payload/runtime/server.mjs",
-      "sha256": "51c9b36b5b6c4295ce4ab59b4c707bcaabff860a29f8a238af52fd3a135029b7"
+      "sha256": "b7479527ff61c6dc13a57e113d2dea270af9fe8fd4ba37d22f3ea144801c1016"
     },
     {
       "path": "payload/runtime/tool-aliases.mjs",
-      "sha256": "efdd2a22f635ea3ab8e6f364945950daa3038af501bb62a7c77807eb90e978b6"
+      "sha256": "507852fdbe910d2d5d3d25d8a6a90b4fa7916dbd83c13651938a4d755e72049e"
     },
     {
       "path": "plugins/artcraft-control/launch-mcp.sh",
@@ -173,7 +173,7 @@
     },
     {
       "path": "plugins/artcraft-control/plugin.json",
-      "sha256": "e661e85697e9103f6a7a721624ce41e01aae298f287c6d7925f2aa1b512bba5e"
+      "sha256": "ade07ab1fd6b62f04a27e2cffe50318cc72f68cd162505e5a955b247c56a3f41"
     },
     {
       "path": "plugins/artcraft-control/skills/artcraft/SKILL.md",

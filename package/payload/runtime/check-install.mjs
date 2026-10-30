@@ -7,7 +7,7 @@ export async function checkInstall(root){
  const env={HOME:process.env.HOME,PATH:path.join(root,'bin')+':/usr/bin:/bin',ARTCRAFT_INSTALL_ROOT:root};
  const transport=new StdioClientTransport({command:'/bin/sh',args:[path.join(root,'launch-mcp.sh')],env,stderr:'pipe'});transport.stderr.on('data',()=>{});
  try{
-  await client.connect(transport,{timeout:15000});const catalog=await client.listTools();if(catalog.tools.length!==11)throw Error('Expected 11 ArtCraft tools');
+  await client.connect(transport,{timeout:15000});const catalog=await client.listTools();if(catalog.tools.length!==12)throw Error('Expected 12 ArtCraft tools');
   const call=async(name,args)=>{const r=await client.callTool({name,arguments:args},undefined,{timeout:30000});if(r.isError)throw Error(r.content.find(c=>c.type==='text')?.text);return JSON.parse(r.content.find(c=>c.type==='text').text);};
   const status=await call('artcraft_status',{});const policy=await call('photocraft_tools',{query:'generative'});
   const guide=await call('artcraft_tools',{app:'effectcraft',query:'guide'});if(!guide.markdown)throw Error('EffectCraft guide missing');
