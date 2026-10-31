@@ -2,16 +2,16 @@
   "node": "22.20.0",
   "tunnelClient": {
     "arm64": {
-      "version": "v0.0.18",
-      "asset": "tunnel-client-v0.0.18-darwin-arm64.zip",
-      "url": "https://github.com/openai/tunnel-client/releases/download/v0.0.18/tunnel-client-v0.0.18-darwin-arm64.zip",
-      "sha256": "ba7a0994f7dd15bc8708aa1602ecf54371a492319a641ab9c33dc00f1fd56bfe"
+      "version": "v0.0.19",
+      "asset": "tunnel-client-v0.0.19-darwin-arm64.zip",
+      "url": "https://github.com/openai/tunnel-client/releases/download/v0.0.19/tunnel-client-v0.0.19-darwin-arm64.zip",
+      "sha256": "2243d024b77af8ee4b4ab7a1447949e5fc8d82bcd2d51b178927f2da9e47ecfd"
     },
     "x64": {
-      "version": "v0.0.18",
-      "asset": "tunnel-client-v0.0.18-darwin-amd64.zip",
-      "url": "https://github.com/openai/tunnel-client/releases/download/v0.0.18/tunnel-client-v0.0.18-darwin-amd64.zip",
-      "sha256": "95595c6538b3f9872c1367592aede22e0d18ea7f6bdd51cd17fe0bf7e5ca8b26"
+      "version": "v0.0.19",
+      "asset": "tunnel-client-v0.0.19-darwin-amd64.zip",
+      "url": "https://github.com/openai/tunnel-client/releases/download/v0.0.19/tunnel-client-v0.0.19-darwin-amd64.zip",
+      "sha256": "dff97674c77cac59e6ab3d901e6cff50fb17a5784c01d8959d1f4adb3afdf4bf"
     }
   }
 }

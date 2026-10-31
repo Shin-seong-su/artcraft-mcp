@@ -1,3 +1,10 @@
+ArtCraft MCP macOS beta 0.2.9 — 2026-10-31
+
+- 13개 공식 CLI의 SHA-256 및 버전 명령 확인. MCP 지원 7개는 별도 Headless 연결과 도구 목록 확인 (CADCraft는 브리지 제공 도구 목록 및 CLI 버전 확인).
+- 같은 Mac의 분리된 HOME에 새 ZIP 설치 후 7개 Headless 연결, PhotoCraft PNG 저장·AI 확대, GridCraft 수식 저장·재열기 시험 통과. 다른 Mac·계정과 실제 터널 인증은 미검증.
+- 기존 연결은 유지했으며 새 CLI에 대한 실제 Live 편집은 검증하지 않았음. EffectCraft 안내 문서는 0.16.0 기준.
+- ZIP SHA-256: 9b738bde42fafbc7c332df1b0dda0f1134e26b43eb584faff712087e94c6a21a
+
 ArtCraft MCP macOS beta 0.2.8 — 2026-10-30
 
 - 0.2.8: 준비된 원본과 축소 참조의 base64 조각을 조립해 각각 원본과 SHA-256이 일치함을 자동 테스트했다. 실제 터널에서 시험 이미지 참조의 첫·마지막 조각 응답을 확인했다.

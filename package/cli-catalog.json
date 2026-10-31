@@ -1,51 +1,51 @@
 [
   {
     "app": "vectorcraft",
-    "version": "0.18.0",
-    "url": "https://github.com/storytold/vectorcraft/releases/download/v0.18.0/vectorcraft-cli-0.18.0-macos-universal.zip",
-    "checksums_url": "https://github.com/storytold/vectorcraft/releases/download/v0.18.0/SHA256SUMS.txt",
-    "archive_sha256": "694d216cc0ac8ff32dc1c32ffa318da9e5229d58bc821e378eef6f3739286744"
+    "version": "0.19.0",
+    "url": "https://github.com/storytold/vectorcraft/releases/download/v0.19.0/vectorcraft-cli-0.19.0-macos-universal.zip",
+    "checksums_url": "https://github.com/storytold/vectorcraft/releases/download/v0.19.0/SHA256SUMS.txt",
+    "archive_sha256": "939bc7ccf225852a941375f45951ca3ad7645cfb3d6d3d75007e68b4c7dd7169"
   },
   {
     "app": "figcraft",
-    "version": "0.12.1",
-    "url": "https://github.com/storytold/figcraft/releases/download/v0.12.1/figcraft-cli-0.12.1-macos-universal.zip",
-    "checksums_url": "https://github.com/storytold/figcraft/releases/download/v0.12.1/SHA256SUMS.txt",
-    "archive_sha256": "14b24c7e1e8ca257fb4df04b4b261cda7fce75bbce00d4580046836626d9e3c9"
+    "version": "0.13.1",
+    "url": "https://github.com/storytold/figcraft/releases/download/v0.13.1/figcraft-cli-0.13.1-macos-universal.zip",
+    "checksums_url": "https://github.com/storytold/figcraft/releases/download/v0.13.1/SHA256SUMS.txt",
+    "archive_sha256": "38ff4b43b8738eb503baf7895436043b85d2ae6733fa10a899991d2fe5ce9a7f"
   },
   {
     "app": "pdfcraft",
-    "version": "0.15.0",
-    "url": "https://github.com/storytold/pdfcraft/releases/download/v0.15.0/pdfcraft-cli-0.15.0-macos-universal.zip",
-    "checksums_url": "https://github.com/storytold/pdfcraft/releases/download/v0.15.0/SHA256SUMS.txt",
-    "archive_sha256": "0304db20f3597e4e9ad3044d67f79cb89bdad49833c6ad7a60c0d0d6a7afaa50"
+    "version": "0.16.1",
+    "url": "https://github.com/storytold/pdfcraft/releases/download/v0.16.1/pdfcraft-cli-0.16.1-macos-universal.zip",
+    "checksums_url": "https://github.com/storytold/pdfcraft/releases/download/v0.16.1/SHA256SUMS.txt",
+    "archive_sha256": "c12d83c4a805171e1d19b6aec79d4272239cd6a67ec9e7efba2943d9fbe3c39c"
   },
   {
     "app": "cadcraft",
-    "version": "0.14.0",
-    "url": "https://github.com/storytold/cadcraft/releases/download/v0.14.0/cadcraft-cli-0.14.0-macos-universal.zip",
-    "checksums_url": "https://github.com/storytold/cadcraft/releases/download/v0.14.0/SHA256SUMS.txt",
-    "archive_sha256": "d6f8687f8966fc28e17fedb85ca672bb96ecba0c5497781dd2e7b5319762c4a4"
+    "version": "0.15.1",
+    "url": "https://github.com/storytold/cadcraft/releases/download/v0.15.1/cadcraft-cli-0.15.1-macos-universal.zip",
+    "checksums_url": "https://github.com/storytold/cadcraft/releases/download/v0.15.1/SHA256SUMS.txt",
+    "archive_sha256": "289f8bde2651cb29bf21951c189e4f60d92da53d03ee65c41fbbaf5da30f554e"
   },
   {
     "app": "effectcraft",
-    "version": "0.18.0",
-    "url": "https://github.com/storytold/effectcraft/releases/download/v0.18.0/effectcraft-cli-0.18.0-macos-universal.zip",
-    "checksums_url": "https://github.com/storytold/effectcraft/releases/download/v0.18.0/SHA256SUMS.txt",
-    "archive_sha256": "e47937e21c060c1f7435669526e44ebb458ef3c762e904d701b733212bd8584d"
+    "version": "0.19.0",
+    "url": "https://github.com/storytold/effectcraft/releases/download/v0.19.0/effectcraft-cli-0.19.0-macos-universal.zip",
+    "checksums_url": "https://github.com/storytold/effectcraft/releases/download/v0.19.0/SHA256SUMS.txt",
+    "archive_sha256": "6212496ea0f208225ff09385e6d4ac95275be679b6ef61844040d9760bba13ba"
   },
   {
     "app": "photocraft",
-    "version": "0.17.0",
-    "url": "https://github.com/storytold/photocraft/releases/download/v0.17.0/photocraft-cli-0.17.0-macos-universal.zip",
-    "checksums_url": "https://github.com/storytold/photocraft/releases/download/v0.17.0/SHA256SUMS.txt",
-    "archive_sha256": "6edff99cc1977508bea9b5566f551374e7b8ef42a21502ee084a1d969f0d54c0"
+    "version": "0.18.0",
+    "url": "https://github.com/storytold/photocraft/releases/download/v0.18.0/photocraft-cli-0.18.0-macos-universal.zip",
+    "checksums_url": "https://github.com/storytold/photocraft/releases/download/v0.18.0/SHA256SUMS.txt",
+    "archive_sha256": "f360b19576ec9cdf34c063414478ba0eae80152b7c3657da9bf2531cdc215216"
   },
   {
     "app": "gridcraft",
-    "version": "0.13.0",
-    "url": "https://github.com/storytold/gridcraft/releases/download/v0.13.0/gridcraft-cli-0.13.0-macos-universal.zip",
-    "checksums_url": "https://github.com/storytold/gridcraft/releases/download/v0.13.0/SHA256SUMS.txt",
-    "archive_sha256": "3db52969cf7621fdfdaebd123f72d5b1de343f63d3b52ec5a4a964f5605986ac"
+    "version": "0.14.2",
+    "url": "https://github.com/storytold/gridcraft/releases/download/v0.14.2/gridcraft-cli-0.14.2-macos-universal.zip",
+    "checksums_url": "https://github.com/storytold/gridcraft/releases/download/v0.14.2/SHA256SUMS.txt",
+    "archive_sha256": "79ce97d3cc1746a1d420ba59c90bcd3d01a27b00009b8627a0dc90cca4be5941"
   }
 ]

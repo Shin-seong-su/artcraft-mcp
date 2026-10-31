@@ -1,7 +1,7 @@
 {
   "name": "artcraft-control",
-  "version": "0.2.8",
-  "fingerprint": "2b3a97117a3da804745b1930bc951a32ab60cf319191df5724c3b3405614d330",
+  "version": "0.2.9",
+  "fingerprint": "5521703d8b2097e4d829957d342e72404d612ac80ac9b8b15cc4020e84513d24",
   "files": [
     {
       "path": "1 설치.command",
@@ -25,7 +25,7 @@
     },
     {
       "path": "cli-catalog.json",
-      "sha256": "39ea85183a9d12e25385356debbdda4fff876baf6a6eb3baab2d3b691a769fe9"
+      "sha256": "ef1b92d95ae07b88b8eaa9fcdee73b2b5c8ef2b8967edc09e4bc604ca2589c5c"
     },
     {
       "path": "installer/connect.sh",
@@ -173,7 +173,7 @@
     },
     {
       "path": "plugins/artcraft-control/plugin.json",
-      "sha256": "2f49a7c6af0ff92d48c4d89b30fc7a80db8e3c1fe7ce63d8a79e751a2a339b74"
+      "sha256": "cbc1d73674e7f64795ff6e757e4f527869e396766f67369994df084ed8fad44d"
     },
     {
       "path": "plugins/artcraft-control/skills/artcraft/SKILL.md",
@@ -181,7 +181,7 @@
     },
     {
       "path": "tools-catalog.json",
-      "sha256": "5479ec12d8db593cb83806147fd700052fbc4389bb1a94af575549422d5d26fc"
+      "sha256": "91c2710c3be46e09ed4065c079564bdc4c58c57edb6104e8d606a11c3cc6320b"
     },
     {
       "path": "설치 안내.txt",
