@@ -16,7 +16,7 @@ import {readEffectcraftGuide} from './effectcraft-guide.mjs';
 export const bridge=new AppBridge();
 const photoFill=new PhotoGenerativeFill({root:bridge.root,native:(tool,args)=>bridge.call('photocraft',tool,args)});
 const photoUpscale=new PhotoAiUpscale({root:bridge.root});
-const app={type:'string',description:'Exact app id returned by artcraft_status: vectorcraft, figcraft, pdfcraft, cadcraft, effectcraft, photocraft, gridcraft.'};
+const app={type:'string',description:'Exact app id returned by artcraft_status: vectorcraft, figcraft, pdfcraft, cadcraft, effectcraft, photocraft, gridcraft, solidcraft.'};
 const schema=(properties,required=[])=>({type:'object',properties,required,additionalProperties:false});
 const baseTools=[
   {name:'artcraft_status',description:'List local ArtCraft apps, CLI availability, control channels, and connected live/headless modes.',inputSchema:schema({}),annotations:{readOnlyHint:true}},
@@ -47,6 +47,7 @@ export function makeServer() {
         case 'artcraft_connect':return reply(await bridge.connect(a.app,a.mode || 'live'));
         case 'artcraft_tools':{
           if(a.app==='effectcraft'&&/^guide(?::|$)/.test(a.query||''))return reply(await readEffectcraftGuide(a.query));
+          if(a.app==='solidcraft'&&a.query==='guide')return reply({type:'agent_guide',app:'solidcraft',markdown:await fs.readFile(path.join(DOCS_ROOT,'solidcraft/AGENT_GUIDE.md'),'utf8')});
           if(a.app==='photocraft'&&a.query==='guide')return reply({type:'agent_guide',app:'photocraft',markdown:await fs.readFile(path.join(DOCS_ROOT,'photocraft/AGENT_GUIDE.md'),'utf8')});
           if(a.app==='gridcraft'&&a.query==='guide')return reply({type:'agent_guide',app:'gridcraft',markdown:await fs.readFile(path.join(DOCS_ROOT,'gridcraft/AGENT_GUIDE.md'),'utf8')});
           if(a.app==='photocraft'&&isFillQuery(a.query))return reply(fillCatalog('',Math.min(30,Math.max(1,a.limit||12)),a.offset||0));

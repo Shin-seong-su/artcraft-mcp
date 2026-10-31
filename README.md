@@ -1,10 +1,10 @@
 # ArtCraft MCP
 
-ChatGPT 채팅에서 로컬 Mac의 ArtCraft 앱을 제어하는 MCP 연결 프로그램입니다. macOS 설치 베타 **0.2.9**을 제공합니다. ArtCraft 제작사의 공식 제품이나 ChatGPT 공개 플러그인 디렉터리 등록 제품은 아닙니다.
+ChatGPT 채팅에서 로컬 Mac의 ArtCraft 앱을 제어하는 MCP 연결 프로그램입니다. macOS 설치 베타 **0.3.0**을 제공합니다. ArtCraft 제작사의 공식 제품이나 ChatGPT 공개 플러그인 디렉터리 등록 제품은 아닙니다.
 
 ## 다운로드와 설치
 
-**[macOS 설치 ZIP 다운로드](https://github.com/Shin-seong-su/artcraft-mcp/raw/refs/heads/main/downloads/artcraft-control-macos-0.2.9.zip)** · [SHA-256](downloads/artcraft-control-macos-0.2.9.zip.sha256) · [설치 안내](package/설치%20안내.txt)
+**[macOS 설치 ZIP 다운로드](https://github.com/Shin-seong-su/artcraft-mcp/raw/refs/heads/main/downloads/artcraft-control-macos-0.3.0.zip)** · [SHA-256](downloads/artcraft-control-macos-0.3.0.zip.sha256) · [설치 안내](package/설치%20안내.txt)
 
 0.2.2의 AI 2배 확대는 큰 이미지에서 타일이 어긋날 수 있습니다. 0.2.3의 PhotoCraft Live 연결은 CLI 인자 오류로 실패할 수 있습니다. 최신 버전으로 업데이트해 주세요.
 
@@ -28,12 +28,13 @@ ChatGPT 채팅에서 로컬 Mac의 ArtCraft 앱을 제어하는 MCP 연결 프�
 | GridCraft | 지원 · 0.14.2 CLI | 연결 구현 · 포트 7981 · 실제 GUI 편집 별도 검증 |
 | EffectCraft | 지원 | 제어 채널 연결 필요 |
 | PhotoCraft | 지원 | 제어 채널 연결 필요 |
+| SolidCraft | 별도 설치 앱의 내장 CLI 사용 | 포트 7982에서 연결·모델 생성·저장 검증 |
 
 Headless는 별도 파일 작업입니다. 화면에 열려 있는 문서의 편집과 구분합니다. MCP 12개 도구에서 앱별 실제 도구 스키마와 안내 문서를 조회할 수 있습니다. PhotoCraft 기본 도구 검색에 생성형 선택 영역 편집도 함께 표시됩니다. CLI는 검증한 버전으로 고정되어 있으므로 GUI 앱 업데이트 뒤에는 호환성을 확인해야 합니다.
 
-공식 CLI 13종의 최신 버전과 체크섬은 [별도 목록](reference/official-cli-macos.json)에 기록했습니다. 설치 패키지와 MCP 앱 제어 범위는 위의 7개 앱입니다.
+공식 CLI 13종의 최신 버전과 체크섬은 [별도 목록](reference/official-cli-macos.json)에 기록했습니다. 설치 패키지는 CLI 7개를 다운로드하며 SolidCraft는 별도로 설치된 앱의 CLI를 사용합니다.
 
-0.2.9는 지원 앱 7개의 CLI를 2026-10-31 공식 릴리스로 갱신합니다. 앱 화면의 Live 편집은 새 버전에서 별도 검증이 필요하며 기존 실행 세션은 자동 교체하지 않습니다. EffectCraft 안내 문서는 0.16.0 기준 스냅샷입니다. SolidCraft는 현재 제어 대상에 포함되지 않습니다.
+0.2.9는 지원 앱 7개의 CLI를 2026-10-31 공식 릴리스로 갱신합니다. 앱 화면의 Live 편집은 새 버전에서 별도 검증이 필요하며 기존 실행 세션은 자동 교체하지 않습니다. EffectCraft 안내 문서는 0.16.0 기준 스냅샷입니다. 0.3.0부터 SolidCraft 앱의 내장 CLI를 사용해 SolidCraft를 지원합니다. SolidCraft 앱은 별도 설치가 필요합니다.
 
 ## PhotoCraft 생성형 채우기
 

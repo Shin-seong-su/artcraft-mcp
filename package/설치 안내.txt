@@ -10,6 +10,7 @@ ZIP을 풀고 “1 설치.command”를 더블클릭합니다. 설치할 때만 
 공식 Node.js 22.20.0과 검증한 버전의 ArtCraft CLI 7개를 내려받고 SHA-256을 검사합니다.
 PhotoCraft를 설치하면 로컬 AI 업스케일 엔진 Real-ESRGAN과 모델도 공식 배포처에서 받아 검증합니다.
 사진/벡터/인터페이스/PDF/CAD/모션/스프레드시트 CLI를 준비하며 GUI 앱은 따로 설치해야 화면에서 볼 수 있습니다.
+SolidCraft는 별도 설치가 필요하며 설치된 앱에 포함된 CLI를 사용합니다. Live 제어 포트는 기본 7982입니다.
 
 설치 위치: ~/Library/Application Support/ArtCraft MCP
 기본 작업 폴더: ~/Documents/ArtCraft 작업

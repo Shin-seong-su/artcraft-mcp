@@ -1,3 +1,11 @@
+ArtCraft MCP macOS beta 0.3.0 — 2026-10-31
+
+- SolidCraft 0.28.0의 내장 CLI로 MCP Headless와 Live 연결 및 19개 도구 조회 확인.
+- Headless 및 Live에서 20 × 15 × 10mm 상자 생성, 체적 3000mm³ 측정, 저장. Live 화면과 저장 파일의 피처를 재확인.
+- 43개 자동 테스트 및 별도 HOME 설치·SolidCraft 연결·PhotoCraft·GridCraft 회귀 시험 통과. SolidCraft 미설치 상태도 단위 검증.
+- 7982 포트 사용. 타 Mac 또는 타 사용자 계정에서의 GUI Live와 ChatGPT 터널은 별도 확인 필요.
+- ZIP SHA-256: 4ee8e44e9ffb7ca822cd86ef7125634ef1651fb8183f24639dc9fe398c22b5dd
+
 ArtCraft MCP macOS beta 0.2.9 — 2026-10-31
 
 - 13개 공식 CLI의 SHA-256 및 버전 명령 확인. MCP 지원 7개는 별도 Headless 연결과 도구 목록 확인 (CADCraft는 브리지 제공 도구 목록 및 CLI 버전 확인).

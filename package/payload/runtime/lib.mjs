@@ -14,8 +14,8 @@ export const HERE = path.dirname(fileURLToPath(import.meta.url));
 export const ROOT = runtimeConfig.root;
 export const STATE_DIR=runtimeConfig.stateDir;
 export const DOCS_ROOT=runtimeConfig.docsRoot;
-export const APPS = ['vectorcraft', 'figcraft', 'pdfcraft', 'cadcraft', 'effectcraft', 'photocraft', 'gridcraft'];
-const LABELS = {vectorcraft:'VectorCraft', figcraft:'FigCraft', pdfcraft:'PdfCraft', cadcraft:'CADCraft', effectcraft:'EffectCraft', photocraft:'PhotoCraft', gridcraft:'GridCraft'};
+export const APPS = ['vectorcraft', 'figcraft', 'pdfcraft', 'cadcraft', 'effectcraft', 'photocraft', 'gridcraft', 'solidcraft'];
+const LABELS = {vectorcraft:'VectorCraft', figcraft:'FigCraft', pdfcraft:'PdfCraft', cadcraft:'CADCraft', effectcraft:'EffectCraft', photocraft:'PhotoCraft', gridcraft:'GridCraft', solidcraft:'SolidCraft'};
 const PORTS = runtimeConfig.ports;
 const exec = promisify(execFile);
 const validator=new Ajv({strict:false,allErrors:true,validateFormats:false});
@@ -39,6 +39,11 @@ export function photoMcpArgs(mode,root,port,tokenFile) {
   if(mode==='live')return ['--bridge',`127.0.0.1:${port}`,'--control-token-file',tokenFile];
   throw Error('Invalid PhotoCraft connection mode');
 }
+export function solidMcpArgs(mode,root,port) {
+  if(mode==='headless')return ['mcp','--headless','--allow-path',root];
+  if(mode==='live')return ['mcp','--connect',`127.0.0.1:${port}`,'--allow-path',root];
+  throw Error('Invalid SolidCraft connection mode');
+}
 export async function runFile(bin,args,options={}) {
   // No shell, no user-supplied executable. Do not retry mutations on failure.
   try {return (await exec(bin,args,{cwd:ROOT,timeout:60000,maxBuffer:12*1024*1024,...options})).stdout;}
@@ -49,6 +54,11 @@ export class AppBridge {
   constructor({root=ROOT,cliRoot=(root===ROOT?runtimeConfig.cliRoot:root),stateDir=STATE_DIR,appDirs=runtimeConfig.appDirs}={}) {this.root=root;this.cliRoot=cliRoot;this.stateDir=stateDir;this.appDirs=appDirs;this.connections=new Map();this.queues=new Map();this.manifest=null;}
   async binary(app) {
     validateApp(app);
+    if(app==='solidcraft') {
+      const application=await this.applicationPath(app);
+      if(!application)throw Error('SolidCraft desktop app is not installed in configured appDirs');
+      const bin=path.join(application,'Contents/MacOS/solidcraft-cli');await fs.access(bin);return bin;
+    }
     const manifestFile=path.join(this.cliRoot,'manifest.json');const stat=await fs.stat(manifestFile);
     const stamp=`${stat.mtimeMs}:${stat.size}`;
     if(!this.manifest||this.manifestStamp!==stamp){this.manifest=JSON.parse(await fs.readFile(manifestFile,'utf8'));this.manifestStamp=stamp;}
@@ -62,6 +72,9 @@ export class AppBridge {
   async installedVersion(app) {
     try{const application=await this.applicationPath(app);if(!application)return null;return (await exec('/usr/bin/plutil',['-extract','CFBundleShortVersionString','raw','-o','-',path.join(application,'Contents/Info.plist')])).stdout.trim();}catch{return null;}
   }
+  async solidCliVersion(bin) {
+    try{const text=(await exec(bin,['--version'],{timeout:10000,maxBuffer:4096})).stdout;return text.match(/solidcraft-cli\s+(\d+\.\d+\.\d+(?:[-+][\w.-]+)?)/i)?.[1]||null;}catch{return null;}
+  }
   serial(app,fn) {
     const pending=(this.queues.get(app) || Promise.resolve()).catch(()=>{}).then(fn);
     this.queues.set(app,pending);return pending;
@@ -71,8 +84,8 @@ export class AppBridge {
     for(const app of APPS) {
       const state=this.connections.get(app);
       let bin=null;try{bin=await this.binary(app)}catch{}
-      const cliPackageVersion=this.manifest?.apps.find(x=>x.app===app)?.version||null;
       const desktopVersion=await this.installedVersion(app);
+      const cliPackageVersion=app==='solidcraft'?(bin?await this.solidCliVersion(bin):null):this.manifest?.apps.find(x=>x.app===app)?.version||null;
       apps.push({app,cli:bin,connected:!!state,mode:state?.mode || null,
         cliPackageVersion,sessionCliVersion:state?.cliVersion||null,desktopVersion,versionMatch:cliPackageVersion&&desktopVersion?cliPackageVersion===desktopVersion:null,
         liveAvailable:PORTS[app] ? await portOpen(PORTS[app]) : app==='pdfcraft' ? await fs.access(this.controlFile()).then(()=>true,()=>false) : false,
@@ -108,6 +121,7 @@ export class AppBridge {
     if(app==='figcraft' && mode==='live')args.push('--attach',String(PORTS[app]));
     if(app==='gridcraft' && mode==='live')args.push('--connect',String(PORTS[app]));
     if(app==='effectcraft')args.push(...(mode==='live'?['--bridge',String(PORTS[app])]:['--empty']));
+    if(app==='solidcraft')args.splice(0,args.length,...solidMcpArgs(mode,this.root,PORTS[app]));
     // In bridge mode the running desktop process owns its automation roots;
     // recent PhotoCraft CLIs reject root flags on the bridge client itself.
     if(app==='photocraft' && mode==='headless')args.push(...photoMcpArgs(mode,this.root,PORTS[app],this.photoTokenFile()));
@@ -117,7 +131,7 @@ export class AppBridge {
       args.push(...photoMcpArgs(mode,this.root,PORTS[app],this.photoTokenFile()));
     }
     const client=new Client({name:'artcraft-chat-bridge',version:'0.1.0'});
-    const binary=await this.binary(app),cliVersion=this.manifest?.apps.find(x=>x.app===app)?.version||null;
+    const binary=await this.binary(app),cliVersion=app==='solidcraft'?await this.solidCliVersion(binary):this.manifest?.apps.find(x=>x.app===app)?.version||null;
     const transport=new StdioClientTransport({command:binary,args,cwd:this.root,stderr:'pipe'});
     transport.stderr.on('data',()=>{}); // drain; native logs can contain document paths
     try {
@@ -125,7 +139,7 @@ export class AppBridge {
       const tools=[];let cursor;
       do{const list=await client.listTools(cursor?{cursor}:{});tools.push(...list.tools);cursor=list.nextCursor;}while(cursor);
       if(mode==='live') {
-        const inspection=await client.callTool({name:app==='gridcraft'?'inspect_workbook':app==='effectcraft'?'get_state':app==='photocraft'?'ui_inspect':'inspect_ui',arguments:{}},undefined,{timeout:15000});
+        const inspection=await client.callTool({name:app==='solidcraft'?'inspect_design':app==='gridcraft'?'inspect_workbook':app==='effectcraft'?'get_state':app==='photocraft'?'ui_inspect':'inspect_ui',arguments:{}},undefined,{timeout:15000});
         if(inspection.isError)throw Error(JSON.stringify(inspection));
       }
       client.onclose=()=>{const current=this.connections.get(app);if(current?.client===client)this.connections.delete(app);};

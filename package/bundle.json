@@ -1,7 +1,7 @@
 {
   "name": "artcraft-control",
-  "version": "0.2.9",
-  "fingerprint": "5521703d8b2097e4d829957d342e72404d612ac80ac9b8b15cc4020e84513d24",
+  "version": "0.3.0",
+  "fingerprint": "3151b04ee2573f6e76d5a74b78ffa381bfaad9b9c73b78aa06003c869f5ccb24",
   "files": [
     {
       "path": "1 설치.command",
@@ -120,6 +120,10 @@
       "sha256": "0469da1898263f82d7af226402ea9b80cd279474c8c0dda0ee7299ac721e3481"
     },
     {
+      "path": "payload/runtime/docs/solidcraft/AGENT_GUIDE.md",
+      "sha256": "0dc9e8b8933a3a1eed55f288e48d51c57886676b787f39c8a8bd8f1e4ff9fb0d"
+    },
+    {
       "path": "payload/runtime/effectcraft-guide.mjs",
       "sha256": "c2c0e2669f4db3717c5ff745a2886b634f803f05a8ece5b4ef9102d42063619e"
     },
@@ -129,7 +133,7 @@
     },
     {
       "path": "payload/runtime/lib.mjs",
-      "sha256": "8ebf481866be2d0caa0dfc014e185894337040cb6bec3aa44d7d5b5798672f87"
+      "sha256": "be36e4b4a2bf82852a1467b5dfbf94834c6ef31fd4d38ac4351b0bd201eb5664"
     },
     {
       "path": "payload/runtime/package-lock.json",
@@ -153,11 +157,11 @@
     },
     {
       "path": "payload/runtime/runtime-config.mjs",
-      "sha256": "f54a779cd1f2784a648992b4f235304a49e536702c17ffa249749d34153abb8e"
+      "sha256": "53a1ca88b096e7ee12404dfdca362fc021504c97a8c268fd41b112f4bb439a86"
     },
     {
       "path": "payload/runtime/server.mjs",
-      "sha256": "b7479527ff61c6dc13a57e113d2dea270af9fe8fd4ba37d22f3ea144801c1016"
+      "sha256": "e6798900465719789e8216357295d27fe682ab07e1cd05f7ae5695e08c0921e8"
     },
     {
       "path": "payload/runtime/tool-aliases.mjs",
@@ -173,11 +177,11 @@
     },
     {
       "path": "plugins/artcraft-control/plugin.json",
-      "sha256": "cbc1d73674e7f64795ff6e757e4f527869e396766f67369994df084ed8fad44d"
+      "sha256": "abf21de2aef37d3c0293328d45949bc5b836fdf3965114e96bd1e013e186e332"
     },
     {
       "path": "plugins/artcraft-control/skills/artcraft/SKILL.md",
-      "sha256": "d73a02232935e0bc8a4b1fdb29f0440cade33e705a8d1586f7954c085b1cfd31"
+      "sha256": "29b97aa922f226e8fec4f2078d3f27ccb86170210437ba017fa2adb4325d90f5"
     },
     {
       "path": "tools-catalog.json",
@@ -185,7 +189,7 @@
     },
     {
       "path": "설치 안내.txt",
-      "sha256": "c7f928b6648499e1a1ed63c33c6436a62305dcef8fb157250a4cbf69a9dd18da"
+      "sha256": "2762669c9fee82bcd61766ab2befc11b114aa2ec06b1b95aac6a19bb63a223de"
     }
   ]
 }
